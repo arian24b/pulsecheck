@@ -34,6 +34,19 @@ wheels = [
 ]
 
 [[package]]
+name = "cfui"
+version = "0.1.0"
+source = { editable = "../cfui" }
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8" },
+    { name = "ruff", specifier = ">=0.8" },
+]
+
+[[package]]
 name = "charset-normalizer"
 version = "3.5.2"
 source = { registry = "https://pypi.org/simple" }
@@ -460,9 +473,10 @@ wheels = [
 
 [[package]]
 name = "pulsecheckcli"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
+    { name = "cfui" },
     { name = "httpx" },
     { name = "ruamel-yaml" },
 ]
@@ -476,6 +490,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cfui", editable = "../cfui" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "ruamel-yaml", specifier = ">=0.19.1" },
 ]

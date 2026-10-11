@@ -11,6 +11,8 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
+from cfui import ui
+
 PACKAGE = "pulsecheckcli"  # name on PyPI (the command and the import package are both "pulsecheck")
 BEGIN = "# >>> pulsecheck (managed by `pulsecheck init`) >>>"
 END = "# <<< pulsecheck <<<"
@@ -112,12 +114,6 @@ def edit_crontab(line: str | None) -> str:
 # ---------------------------------------------------------------- init / env
 
 
-def ask(question: str, yes: bool) -> bool:
-    if yes or not sys.stdin.isatty():
-        return True
-    return input(f"{question} [Y/n] ").strip().lower() in ("", "y", "yes")
-
-
 def env_stub(config_path: Path) -> str:
     from . import config
 
@@ -141,12 +137,12 @@ def ensure_env_file(config_path: Path) -> Path:
 def open_in_editor(path: Path) -> int:
     editor = os.environ.get("VISUAL") or os.environ.get("EDITOR") or next((e for e in ("nano", "vim", "vi") if shutil.which(e)), None)
     if not editor:
-        print(f"no editor found. Edit this file yourself: {path}")
+        ui.warning(f"no editor found. Edit this file yourself: {path}")
         return 1
     return subprocess.call([*shlex.split(editor), str(path)])
 
 
-def init(*, yes=False, force=False, cron=True, download=True, schedule=DEFAULT_CRON, say=print) -> Path:
+def init(*, force=False, cron=True, download=True, schedule=DEFAULT_CRON, say=ui.info) -> Path:
     if not sys.platform.startswith("linux"):
         say("note: cron setup and the shoutrrr download are for Linux; only the config files are created here")
         cron = download = False
@@ -167,22 +163,19 @@ def init(*, yes=False, force=False, cron=True, download=True, schedule=DEFAULT_C
         if shutil.which("shoutrrr") or (Path.home() / ".local/bin/shoutrrr").exists():
             say("shoutrrr: already installed")
         elif shutil.which("docker") and subprocess.run(["docker", "info"], capture_output=True).returncode == 0:
-            if ask("Docker found. Pull the shoutrrr image now?", yes):
-                subprocess.run(["docker", "pull", f"nickfedor/shoutrrr:{notify.SHOUTRRR_VERSION}"], check=False)
-        elif ask("No Docker and no shoutrrr. Download the shoutrrr binary to ~/.local/bin?", yes):
+            say("docker found: pulling the shoutrrr image")
+            subprocess.run(["docker", "pull", f"nickfedor/shoutrrr:{notify.SHOUTRRR_VERSION}"], check=False)
+        else:
             try:
                 say(f"shoutrrr: downloaded {notify.download_shoutrrr(str(Path.home() / '.local/bin'))}")
             except Exception as e:
                 say(f"shoutrrr download failed ({e}). Install it from https://github.com/nicholas-fedor/shoutrrr/releases")
-    if cron and ask(f"Add a cron job ({schedule}) that runs `pulsecheck run`?", yes):
+    if cron:
         try:
             edit_crontab(cron_line(schedule, cfg))
             say(f"cron: installed ({schedule}); log: {sdir / 'run.log'}")
         except RuntimeError as e:
             say(f"cron: {e}")
-    say(
-        "\nNext: pulsecheck env      (add your tokens)\n      edit the sites in the config, then: pulsecheck validate && pulsecheck test-notify"
-    )
     return cfg
 
 
@@ -200,13 +193,3 @@ def upgrade_command() -> list[str]:
     if (repo / ".git").exists():  # install.sh / git clone
         return ["sh", "-c", f"git -C {shlex.quote(str(repo))} pull --ff-only && uv sync --project {shlex.quote(str(repo))} --no-dev -q"]
     return [sys.executable, "-m", "pip", "install", "--upgrade", PACKAGE]
-
-
-def latest_version(timeout: int = 15) -> str | None:
-    import json
-    import urllib.request
-
-    try:
-        return json.load(urllib.request.urlopen(f"https://pypi.org/pypi/{PACKAGE}/json", timeout=timeout))["info"]["version"]
-    except Exception:
-        return None

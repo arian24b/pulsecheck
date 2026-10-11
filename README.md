@@ -71,3 +71,16 @@ Commit messages follow [Conventional Commits](https://www.conventionalcommits.or
 
 ## License
 MIT
+
+## Common commands
+
+Built with [cfui](https://github.com/arian24b/cfui), so every command shares the same look and flags:
+
+```bash
+pulsecheck help [command]     # help
+pulsecheck version            # version and git repo (also: pulsecheck -v)
+pulsecheck update [--check]   # self update
+pulsecheck -q ...             # quiet: no banners/notes (or PULSECHECK_QUIET=1)
+```
+
+Missing required options are asked for interactively on a TTY; in pipes/CI they fail with `--flag is required`.
