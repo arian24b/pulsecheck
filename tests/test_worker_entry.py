@@ -58,8 +58,9 @@ def test_scheduled_run(tmp_path):
         async def put(self, k, v):
             kv[k] = v
 
-    env = types.SimpleNamespace(STATE=KV(), TOKEN="abc")
-    asyncio.run(entry.Default().scheduled(None, env, None))
+    w = entry.Default()
+    w.env = types.SimpleNamespace(STATE=KV(), TOKEN="abc")
+    asyncio.run(w.scheduled(None, None, None))  # Cloudflare passes env=None here; the Worker must use self.env
     urls = [c[0] for c in calls]
     assert "https://bad.example.com/abc" in urls  # ${TOKEN} came from the Worker env
     hook = [c for c in calls if c[0] == "https://hooks.example.com/x"]
@@ -136,6 +137,8 @@ def test_generated_bundle_is_self_contained(tmp_path, monkeypatch):
         async def put(self, k, v):
             kv[k] = v
 
-    asyncio.run(mod.Default().scheduled(None, types.SimpleNamespace(STATE=KV(), HOST="bad.example.com"), None))
+    w = mod.Default()
+    w.env = types.SimpleNamespace(STATE=KV(), HOST="bad.example.com")
+    asyncio.run(w.scheduled(None, None, None))
     assert "https://bad.example.com" in calls and "https://hooks.example.com/x" in calls
     assert json.loads(kv["pulsecheck"])["sites"]["web"][0] == "down"

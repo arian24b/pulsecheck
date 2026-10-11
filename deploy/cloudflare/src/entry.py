@@ -76,6 +76,7 @@ async def run_once(env, tag=None, force=False):
 
 class Default(WorkerEntrypoint):
     async def scheduled(self, controller, env, ctx):
+        env = self.env  # the `env` argument is None in the Python runtime (seen in the logs); self.env is the real one
         try:
             await run_once(env)
         except Exception as e:  # keep the reason where `cf kv keys get pulsecheck-error` (or /status) can find it
