@@ -23,7 +23,7 @@ pulsecheck یک مانیتور آپتایم است که خودتان میزبا�
 ## نصب
 بسته‌ی PyPI اسمش `pulsecheckcli` است، اما دستورش `pulsecheck` (و اسم کوتاه‌تر `pck`) است.
 ```bash
-uv tool install pulsecheckcli     # یا: pipx install pulsecheckcli   (بعد از اولین انتشار در PyPI)
+uv tool install pulsecheckcli     # یا: pipx install pulsecheckcli
 pulsecheck init                   # تنظیمات، .env، shoutrrr و cron job (لینوکس)
 pulsecheck env                    # توکن‌ها را اضافه کنید
 pulsecheck validate && pulsecheck test-notify
@@ -34,7 +34,7 @@ pulsecheck validate && pulsecheck test-notify
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
 ```
-این خط بسته‌ی `pulsecheckcli` را با `uv tool` نصب می‌کند (تا اولین انتشار از گیت‌هاب) و `pulsecheck init` را اجرا می‌کند. بعد `pulsecheck env`، `pulsecheck validate` و `pulsecheck test-notify` را بزنید.
+این خط بسته‌ی `pulsecheckcli` را با `uv tool` نصب می‌کند و `pulsecheck init` را اجرا می‌کند. بعد `pulsecheck env`، `pulsecheck validate` و `pulsecheck test-notify` را بزنید.
 
 ## شروع سریع (از روی clone)
 ```bash

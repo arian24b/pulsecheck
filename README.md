@@ -20,7 +20,7 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 
 ## Install
 ```bash
-uv tool install pulsecheckcli     # or: pipx install pulsecheckcli   (once the first release is on PyPI)
+uv tool install pulsecheckcli     # or: pipx install pulsecheckcli
 pulsecheck init                   # config + .env + shoutrrr + cron job (Linux)
 pulsecheck env                    # add your tokens
 pulsecheck validate && pulsecheck test-notify
@@ -31,7 +31,7 @@ The package is `pulsecheckcli`; the command is `pulsecheck`, and `pck` is a shor
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
 ```
-It installs the PyPI package `pulsecheckcli` with `uv tool` (from GitHub until the first release) and runs `pulsecheck init`. Then run `pulsecheck env`, `pulsecheck validate` and `pulsecheck test-notify`.
+It installs the PyPI package `pulsecheckcli` with `uv tool` and runs `pulsecheck init`. Then run `pulsecheck env`, `pulsecheck validate` and `pulsecheck test-notify`.
 
 ## Quick start (from a clone)
 ```bash
