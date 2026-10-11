@@ -48,9 +48,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE: ${{ inputs.force }}
         run: |
-          extra=""
-          if [ -n "$FORCE" ] && [ "$FORCE" != auto ]; then extra="--$FORCE"; fi
-          uvx --from "python-semantic-release>=9,<11" semantic-release version --changelog --tag --push $extra
+          args=()
+          if [ -n "$FORCE" ] && [ "$FORCE" != auto ]; then args+=("--$FORCE"); fi
+          uvx --from "python-semantic-release>=9,<11" semantic-release version --changelog --tag --push "${args[@]}"
           # a tag points at HEAD only when this run made a release
           if git describe --exact-match --tags HEAD >/dev/null 2>&1; then echo "released=true" >> "$GITHUB_OUTPUT"; fi
       - name: Build and publish to PyPI
