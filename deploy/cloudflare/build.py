@@ -25,6 +25,7 @@ ap.add_argument("--name", default="pulsecheck")
 ap.add_argument(
     "--kv-id", help="existing KV namespace id (default: reuse the namespace named <name>-state if it exists, else cf creates it)"
 )
+ap.add_argument("--no-logs", action="store_true", help="do not enable Workers Logs (read them with `cf o11y telemetry query`)")
 ap.add_argument("--date", default="2025-10-01", help="Workers compatibility date")
 a = ap.parse_args()
 
@@ -84,6 +85,7 @@ env = {"STATE": kv, **{n: {"type": "secret"} for n in names}}
             "compatibilityFlags": ["python_workers"],
             "triggers": [{"type": "scheduled", "schedule": a.cron}],
             "env": env,
+            "observability": {"enabled": not a.no_logs},
             "manifest": {"type": "complete", "mainModule": "entry.py", "modules": modules},
         }
     )

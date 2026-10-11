@@ -14,6 +14,11 @@ messages:                        # optional: edit any alert text. Keys: down, re
   down: "🔴 {site} is DOWN: {error}"          # placeholders: {site} {event} {error} {ms} {minutes} {status} {tags} {days}
   # up: "🟢 {site} recovered after {minutes} min"   # a site can also have its own messages:
 
+# otel:                          # optional: push results as OpenTelemetry (OTLP/HTTP JSON) to a collector or webhook
+#   endpoint: https://otel-collector.example.com:4318   # /v1/metrics and /v1/logs are appended
+#   headers: {Authorization: "Bearer ${OTEL_TOKEN}"}
+#   resource: {env: prod}
+
 defaults:                        # merged into every site
   timeout: 10                    # seconds
   down_after: 2                  # consecutive failures before alerting

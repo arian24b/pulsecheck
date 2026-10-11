@@ -14,11 +14,22 @@
 - برچسب (tag)، بازه بررسی و مسیر هشدار جدا برای هر سایت؛ بازه نگهداری (maintenance) به وقت UTC
 - متن هشدارها بر اساس کلید قابل ویرایش است (`messages:`)
 - دستور `status` (متن، JSON، مارک‌دان) و `report` (درصد آپتایم، زمان پاسخ) بدون داشبورد
+- ارسال OpenTelemetry (متریک و لاگ OTLP/HTTP JSON) به هر collector یا وب‌هوک
+- راه‌اندازی هدایت‌شده: `init` (تنظیمات، `.env`، shoutrrr، cron)، `env`، `validate`، `test-notify` برای همه کانال‌ها و `update`
 - جایگزینی `${ENV}` تا رمزها بیرون از فایل تنظیم بمانند
 - اجرا با GitHub Actions، GitLab CI، cron یا سرورلس روی Vercel و Cloudflare Workers (با [محدودیت‌ها](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless))
 - پایتون ۳٫۱۲ تا ۳٫۱۵ (ترجیحاً ۳٫۱۵) با [uv](https://docs.astral.sh/uv/)
 
-## نصب روی لینوکس (یک دستور)
+## نصب
+```bash
+uv tool install pulsecheck        # یا: pipx install pulsecheck   (بعد از اولین انتشار در PyPI)
+pulsecheck init                   # تنظیمات + .env + shoutrrr + cron job (لینوکس)
+pulsecheck env                    # توکن‌ها را اضافه کنید
+pulsecheck validate && pulsecheck test-notify
+```
+همه دستورها: [دستورها](https://github.com/arian24b/pulsecheck/wiki/FA-Commands).
+
+### یا: یک دستور از گیت‌هاب (لینوکس)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
 ```
@@ -42,6 +53,7 @@ shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌ش�
 | | English | فارسی |
 |---|---|---|
 | معرفی | [Home](https://github.com/arian24b/pulsecheck/wiki/Home) | [خانه](https://github.com/arian24b/pulsecheck/wiki/FA-Home) |
+| همه دستورها | [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands) | [دستورها](https://github.com/arian24b/pulsecheck/wiki/FA-Commands) |
 | نصب و اولین اجرا | [Getting started](https://github.com/arian24b/pulsecheck/wiki/Getting-Started) | [شروع سریع](https://github.com/arian24b/pulsecheck/wiki/FA-Getting-Started) |
 | همه تنظیمات | [Configuration](https://github.com/arian24b/pulsecheck/wiki/Configuration) | [تنظیمات](https://github.com/arian24b/pulsecheck/wiki/FA-Configuration) |
 | سرویس‌های هشدار | [Notifications](https://github.com/arian24b/pulsecheck/wiki/Notifications) | [اعلان‌ها](https://github.com/arian24b/pulsecheck/wiki/FA-Notifications) |

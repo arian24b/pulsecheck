@@ -12,11 +12,22 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 - Per-site tags, intervals and alert routing; UTC maintenance windows
 - Editable alert texts by key (`messages:`)
 - `status` (text, JSON, markdown) and `report` (uptime %, response times) without a dashboard
+- OpenTelemetry push (OTLP/HTTP JSON metrics and logs) to any collector or webhook
+- Guided setup: `init` (config, `.env`, shoutrrr, cron), `env`, `validate`, `test-notify` to every channel, `update`
 - `${ENV}` substitution, so secrets stay out of the config
 - Runs from GitHub Actions, GitLab CI, cron, or serverless on Vercel and Cloudflare Workers (see the [limits](https://github.com/arian24b/pulsecheck/wiki/Serverless))
 - Python 3.12–3.15 (3.15 preferred), managed with [uv](https://docs.astral.sh/uv/)
 
-## Install on Linux (one line)
+## Install
+```bash
+uv tool install pulsecheck        # or: pipx install pulsecheck   (once the first release is on PyPI)
+pulsecheck init                   # config + .env + shoutrrr + cron job (Linux)
+pulsecheck env                    # add your tokens
+pulsecheck validate && pulsecheck test-notify
+```
+All commands: [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands).
+
+### Or: one line from GitHub (Linux)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
 ```
@@ -40,6 +51,7 @@ Use **Use this template** to get your own copy with the GitHub Actions workflow 
 | | English | فارسی |
 |---|---|---|
 | Overview | [Home](https://github.com/arian24b/pulsecheck/wiki/Home) | [خانه](https://github.com/arian24b/pulsecheck/wiki/FA-Home) |
+| Every command | [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands) | [دستورها](https://github.com/arian24b/pulsecheck/wiki/FA-Commands) |
 | Install and first run | [Getting started](https://github.com/arian24b/pulsecheck/wiki/Getting-Started) | [شروع سریع](https://github.com/arian24b/pulsecheck/wiki/FA-Getting-Started) |
 | Every setting | [Configuration](https://github.com/arian24b/pulsecheck/wiki/Configuration) | [تنظیمات](https://github.com/arian24b/pulsecheck/wiki/FA-Configuration) |
 | Alert services | [Notifications](https://github.com/arian24b/pulsecheck/wiki/Notifications) | [اعلان‌ها](https://github.com/arian24b/pulsecheck/wiki/FA-Notifications) |
