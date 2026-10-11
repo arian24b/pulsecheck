@@ -37,3 +37,22 @@ def test_maintenance_daily_and_weekly():
     assert Maintenance(start="02:00", duration=60).active(sun, "a")
     assert not Maintenance(start="02:00", duration=10).active(sun, "a")
     assert not Maintenance(start="02:00", duration=60, sites=["b"]).active(sun, "a")
+
+
+def test_messages_override_and_validation():
+    import pytest
+
+    from pulsecheck import config
+
+    cfg = config.Config(sites=[{"name": "a", "url": "http://x", "messages": {"down": "site {site} bad"}}],
+                        messages={"up": "{site} back after {minutes}m"})
+    s = cfg.sites[0]
+    assert config.render(cfg, s, "down", site="a") == "site a bad"  # site beats global
+    assert config.render(cfg, s, "up", site="a", minutes=3) == "a back after 3m"  # global beats built-in
+    assert config.render(cfg, s, "degraded", site="a", ms=9) == "🟡 a is slow (9ms)"  # built-in default
+    with pytest.raises(ValueError):
+        config._check_messages({"nope": "x"})
+    with pytest.raises(ValueError):  # a bad key under a site is rejected at load time too
+        config.Site(name="a", url="http://x", messages={"nope": "x"})
+    with pytest.raises(ValueError):
+        config._check_messages({"down": "{bogus}"})

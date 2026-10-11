@@ -30,7 +30,8 @@ def run(cfg: config.Config, fail_on_down: bool = False, force: bool = False) -> 
         n = s.notify or cfg.notify
         # ponytail: alerts raised during maintenance are dropped, not deferred
         if event and event in n.events and not any(m.active(utc, s.name) for m in cfg.maintenance):
-            notify.send(notify.command(cfg.shoutrrr_bin, cfg.shoutrrr_image), n.urls, notify.message(s.name, event, r, downtime))
+            notify.send(notify.command(cfg.shoutrrr_bin, cfg.shoutrrr_image), n.urls, config.render(
+                cfg, s, event, site=s.name, error=r.error, ms=r.ms, status=r.status or "", minutes=int(downtime // 60)))
     store.prune()
     return 1 if fail_on_down and down else 0
 
@@ -66,7 +67,7 @@ def main() -> None:
     if a.cmd == "validate":
         print(f"ok: {len(cfg.sites)} sites")
     elif a.cmd == "test-notify":
-        notify.send(notify.command(cfg.shoutrrr_bin, cfg.shoutrrr_image), cfg.notify.urls, "pulsecheck test notification")
+        notify.send(notify.command(cfg.shoutrrr_bin, cfg.shoutrrr_image), cfg.notify.urls, config.render(cfg, None, "test"))
     elif a.cmd == "report":
         report(cfg, a.json)
     else:

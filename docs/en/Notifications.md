@@ -52,6 +52,4 @@ sites:
 Test any change with `uv run pulsecheck test-notify` (it uses the global `notify`).
 
 ## Messages
-- `🔴 web is DOWN: <error>`
-- `🟡 web is slow (3200ms)`
-- `🟢 web is UP (120ms) after 14m`
+The texts are the built-in defaults and can be changed with `messages:` in the YAML (keys `down`, `degraded`, `up`, `test`). See [Configuration](Configuration.md#messages).

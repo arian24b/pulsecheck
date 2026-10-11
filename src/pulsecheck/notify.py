@@ -26,10 +26,3 @@ def send(cmd: list[str], urls: list[str], message: str) -> None:
         except (OSError, subprocess.TimeoutExpired) as e:
             print(f"notify failed: {e}", file=sys.stderr)  # never crash a run over an alert
 
-
-def message(site: str, event: str, r, downtime_s: float) -> str:
-    if event == "down":
-        return f"🔴 {site} is DOWN: {r.error}"
-    if event == "degraded":
-        return f"🟡 {site} is slow ({r.ms}ms)"
-    return f"🟢 {site} is UP ({r.ms}ms) after {int(downtime_s // 60)}m"

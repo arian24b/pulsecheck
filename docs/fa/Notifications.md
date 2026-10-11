@@ -54,8 +54,6 @@ sites:
 هر تغییری را با `uv run pulsecheck test-notify` امتحان کنید (از `notify` سراسری استفاده می‌کند).
 
 ## متن پیام‌ها
-- `🔴 web is DOWN: <error>`
-- `🟡 web is slow (3200ms)`
-- `🟢 web is UP (120ms) after 14m`
+متن‌ها پیش‌فرض داخلی‌اند و با `messages:` در YAML قابل تغییرند (کلیدهای `down`، `degraded`، `up`، `test`). بخش [تنظیمات](Configuration.md#پیام‌ها) را ببینید.
 
 </div>

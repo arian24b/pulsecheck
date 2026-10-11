@@ -1,11 +1,31 @@
 import os
 import re
+import string
 from datetime import datetime, timedelta
 
 from ruamel.yaml import YAML
 from pydantic import BaseModel, model_validator
 
 EVENTS = ["down", "up", "degraded"]
+# Message keys used by the code; users override any of them under `messages:` in the YAML.
+MESSAGES = {
+    "down": "🔴 {site} is DOWN: {error}",
+    "degraded": "🟡 {site} is slow ({ms}ms)",
+    "up": "🟢 {site} is UP ({ms}ms) after {minutes}m",
+    "test": "pulsecheck test notification",
+}
+FIELDS = {"site", "event", "error", "ms", "minutes", "status"}
+
+
+def _check_messages(m: dict[str, str]) -> dict[str, str]:
+    for key, text in m.items():
+        if key not in MESSAGES:
+            raise ValueError(f"unknown message key '{key}' (valid: {', '.join(MESSAGES)})")
+        bad = {f for _, f, _, _ in string.Formatter().parse(text) if f} - FIELDS
+        if bad:
+            raise ValueError(f"message '{key}': unknown placeholder {sorted(bad)} (valid: {sorted(FIELDS)})")
+    return m
+
 DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 
 
@@ -31,9 +51,11 @@ class Site(BaseModel):
     down_after: int = 2  # consecutive failures before alerting
     interval: int = 5  # minutes
     notify: Notify | None = None
+    messages: dict[str, str] = {}
 
     @model_validator(mode="after")
     def _check(self):
+        _check_messages(self.messages)
         if self.type not in ("http", "tcp", "ping"):
             raise ValueError(f"{self.name}: unknown type {self.type}")
         if self.type == "http" and not self.url:
@@ -71,6 +93,7 @@ class Config(BaseModel):
     shoutrrr_bin: str = "auto"  # auto | docker | path to a shoutrrr binary
     shoutrrr_image: str = "nickfedor/shoutrrr:0.21.2"
     notify: Notify = Notify()
+    messages: dict[str, str] = {}
     defaults: dict = {}
     maintenance: list[Maintenance] = []
     sites: list[Site]
@@ -95,7 +118,14 @@ def load(path: str) -> Config:
     d = raw.get("defaults", {})
     raw["sites"] = [{**d, **s} for s in raw.get("sites", [])]
     cfg = Config(**raw)
+    _check_messages(cfg.messages)
     names = [s.name for s in cfg.sites]
     if len(set(names)) != len(names):
         raise ValueError("duplicate site names")
     return cfg
+
+
+def render(cfg: Config, s: Site | None, key: str, **fields) -> str:
+    """Pick the template for `key` (site > global > built-in) and fill it in."""
+    text = {**MESSAGES, **cfg.messages, **(s.messages if s else {})}[key]
+    return text.format_map({"site": "", "event": key, "error": "", "ms": 0, "minutes": 0, "status": "", **fields})

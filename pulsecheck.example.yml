@@ -10,6 +10,10 @@ notify:                          # global; a site may override with its own noti
     - telegram://${TG_TOKEN}@telegram?chats=${TG_CHAT}
   events: [down, up, degraded]
 
+messages:                        # optional: edit any alert text. Keys: down, degraded, up, test
+  down: "🔴 {site} is DOWN: {error}"          # placeholders: {site} {event} {error} {ms} {minutes} {status}
+  # up: "🟢 {site} recovered after {minutes} min"   # a site can also have its own messages:
+
 defaults:                        # merged into every site
   timeout: 10                    # seconds
   down_after: 2                  # consecutive failures before alerting

@@ -9,6 +9,7 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 - TCP and ping checks
 - `${ENV}` substitution, so secrets stay out of the config
 - Alerts only on change, with `down_after` to ignore short blips
+- Editable alert texts by key (`messages:` in the YAML, global or per site)
 - Per-site check intervals, per-site alert routing, UTC maintenance windows
 - Uptime % and response-time report (`report`, `--json`)
 - Runs from GitHub Actions, GitLab CI or cron

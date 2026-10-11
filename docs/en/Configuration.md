@@ -25,6 +25,7 @@ sites:
 | `shoutrrr_image` | `nickfedor/shoutrrr:0.21.2` | Docker image used in `auto`/`docker` mode |
 | `notify` | none | Global alert targets, see below |
 | `defaults` | `{}` | Any site key; merged into every site (a site's own value wins) |
+| `messages` | built-in | Alert texts by key, see [Messages](#messages) |
 | `maintenance` | `[]` | Windows where alerts are suppressed |
 | `sites` | required | List of checks; `name` must be unique |
 
@@ -47,6 +48,7 @@ sites:
 | `down_after` | `2` | all | Consecutive failures before the site is marked down |
 | `interval` | `5` | all | Minutes between checks (see below) |
 | `notify` | global | all | Overrides the global `notify` for this site |
+| `messages` | global | all | Overrides message texts for this site only |
 
 ## Status and alerts
 - A successful check is `up`, or `degraded` if it took at least `slow_ms`.
@@ -60,6 +62,28 @@ Your scheduler decides how often pulsecheck runs; `interval` only skips sites wh
 
 ## Maintenance windows
 Times are **UTC**. `start` is `"HH:MM"` (every day) or `"DAY HH:MM"` with `MON TUE WED THU FRI SAT SUN`. `duration` is in minutes and may cross midnight. Empty `sites` means all sites. Checks still run and are recorded, but alerts raised during the window are dropped, not delivered later.
+
+## Messages
+Every alert text has a key. The code uses only these keys, and you can change any of them under `messages:` (globally, or inside a single site). Keys you don't set keep the built-in text.
+
+| Key | Sent when | Built-in text |
+|---|---|---|
+| `down` | site went down | `🔴 {site} is DOWN: {error}` |
+| `degraded` | site is up but slow | `🟡 {site} is slow ({ms}ms)` |
+| `up` | site recovered | `🟢 {site} is UP ({ms}ms) after {minutes}m` |
+| `test` | `pulsecheck test-notify` | `pulsecheck test notification` |
+
+Placeholders: `{site}` name, `{event}` (`down`/`degraded`/`up`), `{error}` failure reason (empty on success), `{ms}` response time, `{minutes}` minutes since the last status change, `{status}` HTTP status code (empty for tcp/ping). Use `{{` and `}}` for literal braces. Unknown keys or placeholders are rejected by `validate`. Order of precedence: site `messages` > global `messages` > built-in.
+
+```yaml
+messages:
+  down: "ALERT {site} unreachable ({error})"
+  up: "{site} recovered after {minutes} min"
+sites:
+  - name: payments
+    url: https://pay.example.com
+    messages: {down: "💳 payments DOWN, page on-call"}
+```
 
 ## Reports
 `pulsecheck report` shows, for day / week / month / year: uptime %, average and p95 response time of successful checks, and the number of checks. `--json` prints the same data for scripts.
