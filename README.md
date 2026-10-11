@@ -25,7 +25,7 @@ pulsecheck init                   # config + .env + shoutrrr + cron job (Linux)
 pulsecheck env                    # add your tokens
 pulsecheck validate && pulsecheck test-notify
 ```
-All commands: [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands).
+The package is `pulsecheckcli`; the command is `pulsecheck`, and `pck` is a short alias for it. All commands: [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands).
 
 ### Or: one line from GitHub (Linux)
 ```bash
@@ -67,6 +67,7 @@ Questions: [Discussions](https://github.com/arian24b/pulsecheck/discussions). Co
 ```bash
 uv run pytest -q && uv run ruff check . && uv run ruff format --check .
 ```
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, ...): the version, `CHANGELOG.md`, the GitHub release and the PyPI upload are generated from them by python-semantic-release.
 
 ## License
 MIT
