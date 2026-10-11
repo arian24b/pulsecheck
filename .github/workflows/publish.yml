@@ -15,8 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
       - name: Tag must match the package version
         if: github.event_name == 'release'
         run: |
@@ -24,7 +24,7 @@ jobs:
           test "v$version" = "${{ github.event.release.tag_name }}" || { echo "tag ${{ github.event.release.tag_name }} != version v$version"; exit 1; }
       - run: uv build
       - run: uvx twine check dist/*
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -39,9 +39,9 @@ jobs:
     permissions:
       id-token: write # required for trusted publishing
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - run: uv publish --trusted-publishing always
