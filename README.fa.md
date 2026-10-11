@@ -2,7 +2,7 @@
 
 # pulsecheck
 
-[English](https://github.com/arian24b/pulsecheck/blob/main/README.md) · **فارسی**
+[English](README.md) · **فارسی**
 
 pulsecheck یک مانیتور آپتایم است که خودتان میزبانی‌اش می‌کنید. در بازه‌هایی که تعیین می‌کنید آدرس‌های HTTP(S)، پورت‌های TCP و سرورها (با ping) را بررسی می‌کند، وضعیت up، down و کند را نگه می‌دارد و با [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) خبر می‌دهد: اسلک، تلگرام، دیسکورد، ایمیل، ntfy و بیش از ۲۰ سرویس دیگر. یک فایل YAML و یک فایل وضعیت دارد؛ داشبورد و تاریخچه‌ی گیت ندارد.
 
@@ -15,7 +15,7 @@ pulsecheck یک مانیتور آپتایم است که خودتان میزبا�
 - برچسب، بازه‌ی بررسی و مسیر هشدار جدا برای هر سایت؛ بازه‌ی نگهداری (maintenance) به وقت UTC
 - دستور `status` (متن، JSON، مارک‌دان) و `report` (درصد آپتایم و زمان پاسخ) بدون داشبورد
 - ارسال OpenTelemetry (متریک و لاگ OTLP/HTTP JSON) به هر collector یا وب‌هوک
-- راه‌اندازی راهنمادار: `init` (تنظیمات، `.env`، shoutrrr و cron)، `env`، `validate`، `test-notify` برای همه‌ی کانال‌ها و `update`
+- دستورهای راه‌اندازی: `init` (تنظیمات، `.env`، shoutrrr و cron)، `env`، `validate`، `test-notify` برای همه‌ی کانال‌ها و `update`
 - جایگزینی `${ENV}` تا رمزها بیرون از فایل تنظیم بمانند
 - اجرا با GitHub Actions، GitLab CI یا cron، یا سرورلس روی Vercel و Cloudflare Workers (با [محدودیت‌هایش](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless))
 - پایتون ۳٫۱۲ تا ۳٫۱۵ (۳٫۱۵ ترجیح دارد) با [uv](https://docs.astral.sh/uv/)
@@ -65,6 +65,22 @@ uv run pulsecheck report [--json]
 | مشکل‌های رایج | [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting) | [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting) |
 
 همین مستندات در [ویکی گیت‌هاب](https://github.com/arian24b/pulsecheck/wiki) هم هست، به دو زبان انگلیسی و فارسی. پرسش و پاسخ: [Discussions](https://github.com/arian24b/pulsecheck/discussions). مشارکت: [CONTRIBUTING](https://github.com/arian24b/pulsecheck/blob/main/.github/CONTRIBUTING.md). امنیت: [SECURITY](https://github.com/arian24b/pulsecheck/blob/main/.github/SECURITY.md).
+
+## دستورهای مشترک
+
+این ابزار روی [cfuicli](https://github.com/arian24b/cfui) ساخته شده و ظاهر و رفتارش با بقیهٔ ابزارهای این مجموعه یکی است.
+
+```bash
+pulsecheck help [command]     # راهنما؛ -h روی هر دستور کار می‌کند
+pulsecheck version            # نسخه و مخزن گیت (همچنین: -v)
+pulsecheck update [--check]   # به‌روزرسانی خود ابزار؛ --check فقط نسخه‌ها را مقایسه می‌کند
+pulsecheck -q ...             # حالت آرام: بدون بنر و یادداشت (یا PULSECHECK_QUIET=1)
+```
+
+- اگر گزینهٔ اجباری جا افتاده باشد و ابزار را در ترمینال اجرا کرده باشید، مقدارش را می‌پرسد. در pipe یا CI با پیام `--flag is required. Pass --flag <value> or run interactively.` متوقف می‌شود (کد خروج ۲).
+- خطاها در یک کادر قرمز روی stderr و با کد خروج غیرصفر نمایش داده می‌شوند. با Ctrl-C کد خروج ۱۳۰ است.
+- رنگ فقط در ترمینال استفاده می‌شود. با `NO_COLOR=1` خاموش می‌شود.
+- `pulsecheck init` این گزینه‌ها را می‌گیرد: `--no-cron`، `--no-download`، `--force` و `--cron EXPR`. با `--remove-cron` فقط cron job که خودش اضافه کرده بود حذف می‌شود. گزینهٔ سراسری `-c/--config FILE` را می‌توان قبل یا بعد از دستور نوشت.
 
 ## توسعه
 ```bash
