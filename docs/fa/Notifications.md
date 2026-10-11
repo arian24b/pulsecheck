@@ -54,6 +54,6 @@ sites:
 هر تغییری را با `uv run pulsecheck test-notify` امتحان کنید (از `notify` سراسری استفاده می‌کند).
 
 ## متن پیام‌ها
-متن‌ها پیش‌فرض داخلی‌اند و با `messages:` در YAML قابل تغییرند (کلیدهای `down`، `degraded`، `up`، `test`). بخش [تنظیمات](Configuration.md#پیام‌ها) را ببینید.
+متن‌ها پیش‌فرض داخلی‌اند و با `messages:` در YAML قابل تغییرند (کلیدهای `down`، `degraded`، `up`، `test`). بخش [تنظیمات](Configuration.md) را ببینید.
 
 </div>
