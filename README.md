@@ -31,7 +31,7 @@ All commands: [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands).
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
 ```
-Then edit `~/.config/pulsecheck/pulsecheck.yml` and run `pulsecheck -c ~/.config/pulsecheck/pulsecheck.yml validate`.
+It installs the PyPI package `pulsecheckcli` with `uv tool` (from GitHub until the first release) and runs `pulsecheck init`. Then run `pulsecheck env`, `pulsecheck validate` and `pulsecheck test-notify`.
 
 ## Quick start (from a clone)
 ```bash
@@ -53,10 +53,12 @@ Use **Use this template** to get your own copy with the GitHub Actions workflow 
 | Overview | [Home](https://github.com/arian24b/pulsecheck/wiki/Home) | [خانه](https://github.com/arian24b/pulsecheck/wiki/FA-Home) |
 | Every command | [Commands](https://github.com/arian24b/pulsecheck/wiki/Commands) | [دستورها](https://github.com/arian24b/pulsecheck/wiki/FA-Commands) |
 | Install and first run | [Getting started](https://github.com/arian24b/pulsecheck/wiki/Getting-Started) | [شروع سریع](https://github.com/arian24b/pulsecheck/wiki/FA-Getting-Started) |
-| Every setting | [Configuration](https://github.com/arian24b/pulsecheck/wiki/Configuration) | [تنظیمات](https://github.com/arian24b/pulsecheck/wiki/FA-Configuration) |
+| Every YAML key (types, defaults) | [YAML reference](https://github.com/arian24b/pulsecheck/wiki/YAML-Reference) | [مرجع YAML](https://github.com/arian24b/pulsecheck/wiki/FA-YAML-Reference) |
+| Every setting, explained | [Configuration](https://github.com/arian24b/pulsecheck/wiki/Configuration) | [تنظیمات](https://github.com/arian24b/pulsecheck/wiki/FA-Configuration) |
 | Alert services | [Notifications](https://github.com/arian24b/pulsecheck/wiki/Notifications) | [اعلان‌ها](https://github.com/arian24b/pulsecheck/wiki/FA-Notifications) |
 | GitHub / GitLab / cron | [Scheduling](https://github.com/arian24b/pulsecheck/wiki/Scheduling) | [زمان‌بندی](https://github.com/arian24b/pulsecheck/wiki/FA-Scheduling) |
 | Vercel / Cloudflare | [Serverless](https://github.com/arian24b/pulsecheck/wiki/Serverless) | [سرورلس](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless) |
+| How it works, what is tested | [Design notes](https://github.com/arian24b/pulsecheck/wiki/Design-Notes) | [یادداشت‌های طراحی](https://github.com/arian24b/pulsecheck/wiki/FA-Design-Notes) |
 | Problems | [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting) | [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting) |
 
 Questions: [Discussions](https://github.com/arian24b/pulsecheck/discussions). Contributing: [CONTRIBUTING](https://github.com/arian24b/pulsecheck/blob/main/.github/CONTRIBUTING.md). Security: [SECURITY](https://github.com/arian24b/pulsecheck/blob/main/.github/SECURITY.md).
