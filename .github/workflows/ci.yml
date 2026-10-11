@@ -37,9 +37,11 @@ jobs:
         run: uvx --from shellcheck-py shellcheck install.sh deploy/cloudflare/*.sh
       - name: GitLab CI file
         run: uvx check-jsonschema --builtin-schema vendor.gitlab-ci .gitlab-ci.yml
+      - name: Package builds and passes twine check
+        run: uv build && uvx twine check dist/*
       - name: Example config is valid
         env:
           TG_TOKEN: "1:a"
           TG_CHAT: "@c"
           API_TOKEN: "t"
-        run: uv run pulsecheck -c pulsecheck.example.yml validate
+        run: uv run pulsecheck -c pulsecheck.example.yml validate --no-verify

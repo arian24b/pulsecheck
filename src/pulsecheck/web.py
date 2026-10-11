@@ -48,17 +48,19 @@ async def _open(env, path: str):
         async def send(urls, text):
             await httpnotify.send(post, urls, text, fallback=shoutrrr)
 
-        yield cfg, BlobStore(lambda: redis("GET", KEY), lambda text: redis("SET", KEY, text)), check, send
+        yield cfg, BlobStore(lambda: redis("GET", KEY), lambda text: redis("SET", KEY, text)), check, send, post
 
 
 async def cron(env=None, path: str = "pulsecheck.yml", tag: str | None = None, force: bool = False) -> dict:
     lines: list[str] = []
-    async with _open(env, path) as (cfg, store, check, send):
+    async with _open(env, path) as (cfg, store, check, send, post):
         # 20 parallel checks keeps us far below Vercel's 1,024 shared file descriptors; ping cannot run in the sandbox
-        down = await engine.run(cfg, store, check, send, skip_types=("ping",), concurrency=20, tag=tag, force=force, log=lines.append)
+        down = await engine.run(
+            cfg, store, check, send, post=post, skip_types=("ping",), concurrency=20, tag=tag, force=force, log=lines.append
+        )
     return {"down": down, "sites": lines}
 
 
 async def status(env=None, path: str = "pulsecheck.yml", tag: str | None = None) -> list[dict]:
-    async with _open(env, path) as (cfg, store, _, _):
+    async with _open(env, path) as (cfg, store, *_):
         return await engine.status(cfg, store, tag)

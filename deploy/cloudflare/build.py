@@ -43,7 +43,7 @@ bundle.mkdir(parents=True)
 
 # Cloudflare mounts only the main module for Python Workers (other modules are not importable, verified with `cf deploy`),
 # so everything goes into ONE entry.py: the package sources are embedded and registered as pulsecheck.* at import time.
-ORDER = ["config", "result", "state", "httpnotify", "engine"]  # dependency order; cli/web/notify/checks are not used in the Worker
+ORDER = ["config", "result", "state", "httpnotify", "otel", "engine"]  # dependency order; cli/web/notify/checks are not used in the Worker
 sources = {n: (ROOT / "src" / "pulsecheck" / f"{n}.py").read_text() for n in ORDER}
 loader = """import sys as _sys, types as _types
 

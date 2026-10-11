@@ -79,3 +79,53 @@ def test_ssl_expired_detection(monkeypatch):
     monkeypatch.setattr(checks, "_http", lambda s: checks.Result(False, 1, error="verify failed"))
     r = checks.run_check(s)
     assert not r.ok and r.error == "TLS certificate has expired"
+
+
+def test_dotenv_and_cron_block(tmp_path, monkeypatch):
+    import os
+
+    from pulsecheck import setup
+
+    assert setup.parse_dotenv("# c\nA=1\nexport B=\"two words\"\nC='x'\nbad line\nD=\n") == {"A": "1", "B": "two words", "C": "x", "D": ""}
+    cfg = tmp_path / "pulsecheck.yml"
+    cfg.write_text("sites: []")
+    (tmp_path / ".env").write_text("PC_T1=hello\nPC_T2=\nPC_T3=fromfile\n")
+    monkeypatch.delenv("PC_T1", raising=False)
+    monkeypatch.delenv("PC_T2", raising=False)
+    monkeypatch.setenv("PC_T3", "fromenv")
+    assert setup.load_dotenv(cfg) == ["PC_T1"] and os.environ["PC_T1"] == "hello"
+    assert "PC_T2" not in os.environ and os.environ["PC_T3"] == "fromenv"  # empty placeholder skipped, real env wins
+    monkeypatch.delenv("PC_T1")
+    # the managed cron block is added once, replaced in place, and removable without touching other lines
+    base = "MAILTO=me\n0 1 * * * backup\n"
+    one = setup.with_block(base, "*/5 * * * * a")
+    two = setup.with_block(one, "*/10 * * * * b")
+    assert two.count(setup.BEGIN) == 1 and "*/10 * * * * b" in two and "*/5 * * * * a" not in two and "0 1 * * * backup" in two
+    assert setup.with_block(two, None) == base and setup.with_block("", None) == ""
+    assert setup.mask("telegram://123:secret@telegram?chats=@x") == "telegram://***"
+
+
+def test_upgrade_command_and_step_helpers(monkeypatch):
+    from pulsecheck import setup
+
+    monkeypatch.setattr(setup.sys, "prefix", "/home/u/.local/share/uv/tools/pulsecheck")
+    assert setup.upgrade_command() == ["uv", "tool", "upgrade", "pulsecheck"]
+    monkeypatch.setattr(setup.sys, "prefix", "/home/u/.local/pipx/venvs/pulsecheck")
+    assert setup.upgrade_command() == ["pipx", "upgrade", "pulsecheck"]
+
+
+def test_init_creates_files_and_cron(tmp_path, monkeypatch):
+    from pulsecheck import setup
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "cfg"))
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    installed = []
+    monkeypatch.setattr(setup, "edit_crontab", lambda line: installed.append(line))
+    cfg = setup.init(yes=True, download=False, say=lambda *_: None)
+    assert cfg == tmp_path / "cfg/pulsecheck/pulsecheck.yml" and f"state_file: {tmp_path}/state/pulsecheck/pulsecheck.db" in cfg.read_text()
+    env = tmp_path / "cfg/pulsecheck/.env"
+    assert "TG_TOKEN=" in env.read_text() and oct(env.stat().st_mode)[-3:] == "600"
+    assert len(installed) == 1 and "-m pulsecheck" in installed[0] and installed[0].startswith("*/5 * * * *")
+    cfg.write_text("keep me")
+    setup.init(yes=True, download=False, cron=False, say=lambda *_: None)
+    assert cfg.read_text() == "keep me"  # an existing config is never overwritten without --force

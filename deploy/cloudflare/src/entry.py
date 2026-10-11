@@ -68,6 +68,7 @@ async def run_once(env, tag=None, force=False):
         skip_types=("ping", "tcp"),
         concurrency=6,
         tag=tag,
+        post=post,
         force=force,
         log=lambda m: (lines.append(m), print(m)),
     )

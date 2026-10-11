@@ -1,6 +1,6 @@
 # pulsecheck
 
-**English** · [فارسی](README.fa.md)
+**English** · [فارسی](https://github.com/arian24b/pulsecheck/blob/main/README.fa.md)
 
 Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (ping) on a schedule, tracks up / down / slow state, and sends alerts through [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) (Slack, Telegram, Discord, email, ntfy and 20+ more). One YAML file, one state file, no dashboard, no git history.
 
@@ -47,7 +47,7 @@ Use **Use this template** to get your own copy with the GitHub Actions workflow 
 | Vercel / Cloudflare | [Serverless](https://github.com/arian24b/pulsecheck/wiki/Serverless) | [سرورلس](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless) |
 | Problems | [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting) | [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting) |
 
-Questions: [Discussions](https://github.com/arian24b/pulsecheck/discussions). Contributing: [CONTRIBUTING](.github/CONTRIBUTING.md). Security: [SECURITY](.github/SECURITY.md).
+Questions: [Discussions](https://github.com/arian24b/pulsecheck/discussions). Contributing: [CONTRIBUTING](https://github.com/arian24b/pulsecheck/blob/main/.github/CONTRIBUTING.md). Security: [SECURITY](https://github.com/arian24b/pulsecheck/blob/main/.github/SECURITY.md).
 
 ## Development
 ```bash

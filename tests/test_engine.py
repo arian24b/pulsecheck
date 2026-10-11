@@ -217,3 +217,44 @@ def test_download_shoutrrr_verifies_checksum(tmp_path, monkeypatch):
     monkeypatch.setattr(notify.urllib.request, "urlopen", fake(hashlib.sha256(blob).hexdigest()))
     path = notify.download_shoutrrr(str(tmp_path / "good"), "9.9.9")
     assert open(path, "rb").read() == payload and os.access(path, os.X_OK)
+
+
+def test_otel_payloads_and_engine_push():
+    cfg = config.from_dict(
+        {
+            "otel": {"endpoint": "https://otel.example.com:4318/", "headers": {"x-key": "k"}, "resource": {"env": "prod"}},
+            "notify": {"urls": ["x://"]},
+            "sites": [{"name": "a", "url": "http://a", "down_after": 1, "tags": ["prod"], "ssl_warn_days": 30}],
+        }
+    )
+    posted = []
+
+    async def post(url, headers, body):
+        posted.append((url, headers, json.loads(body)))
+        return 200
+
+    store = BlobStore(lambda: _get({}), lambda t: _put({}, t))
+
+    async def check(s):
+        return Result(False, 0, error="boom")
+
+    async def send(urls, text):
+        pass
+
+    asyncio.run(engine.run(cfg, store, check, send, post=post, force=True, log=lambda *_: None))
+    urls = [p[0] for p in posted]
+    assert urls == ["https://otel.example.com:4318/v1/metrics", "https://otel.example.com:4318/v1/logs"]
+    assert posted[0][1]["x-key"] == "k" and posted[0][1]["Content-Type"] == "application/json"
+    rm = posted[0][2]["resourceMetrics"][0]
+    attrs = {a["key"]: a["value"]["stringValue"] for a in rm["resource"]["attributes"]}
+    assert attrs == {"service.name": "pulsecheck", "env": "prod"}
+    metrics = {m["name"]: m["gauge"]["dataPoints"][0] for m in rm["scopeMetrics"][0]["metrics"]}
+    assert metrics["pulsecheck.up"]["asInt"] == "0" and "pulsecheck.response_time" not in metrics  # failed check: no latency point
+    assert {a["key"]: a["value"]["stringValue"] for a in metrics["pulsecheck.up"]["attributes"]} == {
+        "site": "a",
+        "type": "http",
+        "state": "down",
+        "tags": "prod",
+    }
+    rec = posted[1][2]["resourceLogs"][0]["scopeLogs"][0]["logRecords"][0]
+    assert rec["severityText"] == "ERROR" and "DOWN" in rec["body"]["stringValue"]

@@ -21,15 +21,30 @@ def command(bin_: str, image: str) -> list[str]:
     return ["shoutrrr" if bin_ == "auto" else bin_]
 
 
+def send_one(cmd: list[str], url: str, message: str) -> tuple[bool, str]:
+    """Send one alert with shoutrrr. Returns (ok, detail); never raises."""
+    try:
+        # generous timeout: the first docker run pulls the image
+        p = subprocess.run([*cmd, "send", "--url", url, "--message", message], capture_output=True, text=True, timeout=180)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return False, str(e)
+    return p.returncode == 0, (p.stderr.strip() or p.stdout.strip())
+
+
 def send(cmd: list[str], urls: list[str], message: str) -> None:
     for u in urls:
-        try:
-            # generous timeout: the first docker run pulls the image
-            p = subprocess.run([*cmd, "send", "--url", u, "--message", message], capture_output=True, text=True, timeout=180)
-            if p.returncode:
-                print(f"notify failed: {p.stderr.strip() or p.stdout.strip()}", file=sys.stderr)
-        except (OSError, subprocess.TimeoutExpired) as e:
-            print(f"notify failed: {e}", file=sys.stderr)  # never crash a run over an alert
+        ok, detail = send_one(cmd, u, message)
+        if not ok:
+            print(f"notify failed: {detail}", file=sys.stderr)  # never crash a run over an alert
+
+
+def verify(cmd: list[str], url: str) -> tuple[bool, str]:
+    """Ask shoutrrr whether the url is valid for its service (no message is sent)."""
+    try:
+        p = subprocess.run([*cmd, "verify", "--url", url], capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return False, str(e)
+    return p.returncode == 0, (p.stderr.strip() or p.stdout.strip()).splitlines()[0] if (p.stderr or p.stdout).strip() else ""
 
 
 SHOUTRRR_VERSION = "0.21.2"

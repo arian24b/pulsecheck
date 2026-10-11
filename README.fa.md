@@ -2,7 +2,7 @@
 
 # pulsecheck
 
-[English](README.md) · **فارسی**
+[English](https://github.com/arian24b/pulsecheck/blob/main/README.md) · **فارسی**
 
 مانیتور آپتایم خودمیزبان. آدرس‌های HTTP(S)، پورت‌های TCP و میزبان‌ها (ping) را در بازه‌های مشخص بررسی می‌کند، وضعیت up / down / کند را نگه می‌دارد و هشدارها را با [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) می‌فرستد (اسلک، تلگرام، دیسکورد، ایمیل، ntfy و بیش از ۲۰ سرویس دیگر). یک فایل YAML، یک فایل وضعیت، بدون داشبورد و بدون تاریخچه گیت.
 
@@ -49,7 +49,7 @@ shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌ش�
 | Vercel / Cloudflare | [Serverless](https://github.com/arian24b/pulsecheck/wiki/Serverless) | [سرورلس](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless) |
 | مشکلات | [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting) | [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting) |
 
-پرسش و پاسخ: [Discussions](https://github.com/arian24b/pulsecheck/discussions). مشارکت: [CONTRIBUTING](.github/CONTRIBUTING.md). امنیت: [SECURITY](.github/SECURITY.md).
+پرسش و پاسخ: [Discussions](https://github.com/arian24b/pulsecheck/discussions). مشارکت: [CONTRIBUTING](https://github.com/arian24b/pulsecheck/blob/main/.github/CONTRIBUTING.md). امنیت: [SECURITY](https://github.com/arian24b/pulsecheck/blob/main/.github/SECURITY.md).
 
 ## توسعه
 ```bash

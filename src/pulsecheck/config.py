@@ -100,6 +100,18 @@ class Maintenance:
 
 
 @dataclass
+class Otel:
+    """Push check results as OpenTelemetry (OTLP/HTTP JSON) to a collector or any endpoint that accepts it."""
+
+    endpoint: str  # base url, e.g. https://collector.example.com:4318 (/v1/metrics and /v1/logs are appended)
+    headers: dict[str, str] = field(default_factory=dict)
+    service_name: str = "pulsecheck"
+    resource: dict[str, str] = field(default_factory=dict)  # extra resource attributes, e.g. {env: prod}
+    metrics: bool = True
+    logs: bool = True  # one log record per alert (down / up / degraded / ssl_warn / reminder)
+
+
+@dataclass
 class Config:
     state_file: str = "pulsecheck.db"
     shoutrrr_bin: str = "auto"  # auto | docker | path to a shoutrrr binary
@@ -107,6 +119,7 @@ class Config:
     notify: Notify = field(default_factory=Notify)
     messages: dict[str, str] = field(default_factory=dict)
     maintenance: list[Maintenance] = field(default_factory=list)
+    otel: Otel | None = None
     sites: list[Site] = field(default_factory=list)
 
     def __post_init__(self):
