@@ -1,47 +1,61 @@
-# Publishes to PyPI with a Trusted Publisher (OIDC, no API token stored anywhere).
-# One-time setup on pypi.org -> Your projects / Publishing -> add a (pending) publisher:
-#   project pulsecheckcli, owner arian24b, repository pulsecheck, workflow publish.yml, environment pypi
-# Release: bump `version` in pyproject.toml, push, then create a GitHub release whose tag is v<version>.
+# Release pipeline: python-semantic-release reads the Conventional Commits since the last tag, bumps the version in
+# pyproject.toml, writes CHANGELOG.md, tags vX.Y.Z, creates the GitHub release, and then this job publishes to PyPI with a
+# Trusted Publisher (OIDC, no token). The PyPI publisher is registered for: project pulsecheckcli, owner arian24b,
+# repository pulsecheck, workflow publish.yml, environment pypi.
+#
+# Safety switch: automatic releases run only when the repository variable AUTO_RELEASE is "true"
+#   gh variable set AUTO_RELEASE --body true -R arian24b/pulsecheck
+# "Run workflow" (workflow_dispatch) always works, and can force a bump level.
 name: publish
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Bump level (auto = decide from the commit messages)"
+        type: choice
+        options: [auto, patch, minor, major]
+        default: auto
 
 permissions:
-  contents: read
+  contents: write # push the version commit, the tag and the GitHub release
+  id-token: write # PyPI trusted publishing
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-      - name: Tag must match the package version
-        if: github.event_name == 'release'
-        run: |
-          version=$(uv run --no-project python -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
-          test "v$version" = "${{ github.event.release.tag_name }}" || { echo "tag ${{ github.event.release.tag_name }} != version v$version"; exit 1; }
-      - run: uv build
-      - run: uvx twine check dist/*
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-  publish:
-    needs: build
-    if: github.event_name == 'release'
+  release:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && vars.AUTO_RELEASE == 'true') }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/project/pulsecheckcli/
-    permissions:
-      id-token: write # required for trusted publishing
+    concurrency: release
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
         with:
-          name: dist
-          path: dist/
+          fetch-depth: 0 # semantic-release needs the full history and tags
+          ref: ${{ github.event.workflow_run.head_branch || github.ref_name }}
       - uses: astral-sh/setup-uv@v6
-      - run: uv publish --trusted-publishing always
+      - name: Git identity for the release commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Version, changelog, tag and GitHub release
+        id: sr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          extra=""
+          if [ -n "$FORCE" ] && [ "$FORCE" != auto ]; then extra="--$FORCE"; fi
+          uvx --from "python-semantic-release>=9,<11" semantic-release version --changelog --tag --push $extra
+          # a tag points at HEAD only when this run made a release
+          if git describe --exact-match --tags HEAD >/dev/null 2>&1; then echo "released=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Build and publish to PyPI
+        if: steps.sr.outputs.released == 'true'
+        run: |
+          uv build
+          uvx twine check dist/*
+          uv publish --trusted-publishing always

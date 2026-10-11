@@ -1,6 +1,6 @@
 [project]
 name = "pulsecheckcli"
-version = "0.1.0"
+version = "0.1.0"  # managed by python-semantic-release; the first run publishes exactly this version
 description = "Self-hosted uptime monitor: HTTP/TCP/ping/TLS checks, shoutrrr alerts, OpenTelemetry export. Runs from cron, CI or serverless."
 readme = "README.md"
 license = "MIT"
@@ -33,6 +33,7 @@ Changelog = "https://github.com/arian24b/pulsecheck/releases"
 
 [project.scripts]
 pulsecheck = "pulsecheck.cli:main"
+pck = "pulsecheck.cli:main"  # short alias
 
 [tool.uv.build-backend]
 module-name = "pulsecheck"  # the PyPI project is pulsecheckcli; the import name and the command stay pulsecheck
@@ -44,6 +45,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
+    "python-semantic-release>=10.7.0",
     "ruff>=0.17.0",
 ]
 
@@ -55,3 +57,16 @@ extend-exclude = ["deploy/cloudflare/.cloudflare"]
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
 ignore = ["E501", "B008"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+tag_format = "v{version}"
+allow_zero_version = true
+major_on_zero = false  # while 0.x, a breaking change bumps the minor version
+
+[tool.semantic_release.branches.main]
+match = "main"
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
+output_format = "md"
