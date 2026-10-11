@@ -30,17 +30,22 @@ def _alerts(s, event, new, meta, r, since, now):
     return out
 
 
-async def run(cfg, store, check, send, *, post=None, force=False, skip_types=(), concurrency=16, tag=None, log=print) -> int:
-    """check: async (Site) -> Result; send: async (urls, text) -> None; post: async (url, headers, body) -> status, used for
+async def run(
+    cfg, store, check, send, *, post=None, force=False, skip_types=(), unsupported=None, concurrency=16, tag=None, log=print
+) -> int:
+    """check: async (Site) -> Result; send: async (urls, text) -> None; unsupported: (Site) -> reason or None, for sites a platform cannot check; post: async (url, headers, body) -> status, used for
     the OpenTelemetry export when cfg.otel is set. Returns how many sites are down."""
     await store.open()
     now = time.time()
     utc = datetime.now(UTC)
     sites = _selected(cfg, tag)
+    skipped = {}
     for s in sites:
-        if s.type in skip_types:
-            log(f"{s.name}: skipped, type '{s.type}' is not supported on this platform")
-    due = [s for s in sites if s.type not in skip_types and (force or now - store.get(s.name)[3] >= s.interval * 60 - 60)]
+        reason = f"type '{s.type}' is not supported on this platform" if s.type in skip_types else (unsupported(s) if unsupported else None)
+        if reason:
+            skipped[s.name] = reason
+            log(f"{s.name}: skipped, {reason}")
+    due = [s for s in sites if s.name not in skipped and (force or now - store.get(s.name)[3] >= s.interval * 60 - 60)]
     gate = asyncio.Semaphore(concurrency)
 
     async def one(s):

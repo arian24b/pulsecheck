@@ -66,6 +66,7 @@ async def run_once(env, tag=None, force=False):
         http_check,
         send,
         skip_types=("ping", "tcp"),
+        unsupported=lambda s: "ip_version is not supported on Cloudflare (fetch picks the address family)" if s.ip_version else None,
         concurrency=6,
         tag=tag,
         post=post,

@@ -258,3 +258,22 @@ def test_otel_payloads_and_engine_push():
     }
     rec = posted[1][2]["resourceLogs"][0]["scopeLogs"][0]["logRecords"][0]
     assert rec["severityText"] == "ERROR" and "DOWN" in rec["body"]["stringValue"]
+
+
+def test_unsupported_callback_skips_sites_and_says_why():
+    cfg = config.from_dict({"sites": [{"name": "a", "url": "http://a", "ip_version": 6}, {"name": "b", "url": "http://b"}]})
+    lines = []
+
+    async def check(s):
+        return Result(True, 5)
+
+    async def send(urls, text):
+        pass
+
+    mem = {}
+    store = BlobStore(lambda: _get(mem), lambda t: _put(mem, t))
+    asyncio.run(
+        engine.run(cfg, store, check, send, force=True, unsupported=lambda s: "no ipv6 here" if s.ip_version else None, log=lines.append)
+    )
+    assert "a: skipped, no ipv6 here" in lines and any(line.startswith("b: up") for line in lines)
+    assert "a" not in json.loads(mem["doc"])["sites"]

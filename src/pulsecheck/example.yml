@@ -34,6 +34,7 @@ sites:
     url: https://example.com
     tags: [prod]                 # use with --tag prod
     ssl_warn_days: 14            # warn when the https certificate expires within 14 days
+    # ip_version: 6              # connect only over IPv6 (or 4); default: whatever the system picks
     expected_status: [200, 301]  # default: any 2xx
     max_response_ms: 10000       # slower = down
   - name: api

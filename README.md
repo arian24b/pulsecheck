@@ -7,7 +7,7 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 ## Features
 - HTTP checks: method, headers, body, expected status, redirect limit, max response time, "slow" (degraded) threshold
 - TLS certificate expiry warnings (`ssl_warn_days`) and expired-certificate failures
-- TCP and ping checks
+- TCP and ping checks, each optionally forced over IPv4 or IPv6 (`ip_version`)
 - Alerts only on change, `down_after` to ignore blips, optional repeat reminders (`remind_every`)
 - Per-site tags, intervals and alert routing; UTC maintenance windows
 - Editable alert texts by key (`messages:`)

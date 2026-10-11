@@ -31,6 +31,7 @@ def load_entry(tmp_path, fetch):
                     {"name": "web", "url": "https://ok.example.com"},
                     {"name": "api", "url": "https://bad.example.com/${TOKEN}"},
                     {"name": "db", "type": "tcp", "host": "h", "port": 1},
+                    {"name": "v6", "url": "https://v6.example.com", "ip_version": 6},
                 ],
             }
         )
@@ -67,6 +68,7 @@ def test_scheduled_run(tmp_path):
     assert len(hook) == 1 and "api is DOWN" in json.loads(hook[0][1]["body"])["message"]
     assert json.loads(kv["pulsecheck"])["sites"]["api"][0] == "down"
     assert "db" not in json.loads(kv["pulsecheck"])["sites"]  # tcp is skipped on Workers
+    assert "v6" not in json.loads(kv["pulsecheck"])["sites"] and "https://v6.example.com" not in urls  # fetch cannot pick IPv6
 
 
 def test_status_endpoint_needs_token(tmp_path):

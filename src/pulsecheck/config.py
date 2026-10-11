@@ -62,11 +62,14 @@ class Site:
     tags: list[str] = field(default_factory=list)
     ssl_warn_days: int | None = None  # warn when the https certificate expires within this many days
     remind_every: int = 0  # minutes between repeated "still down" alerts, 0 = off
+    ip_version: int | None = None  # 4 or 6: connect only over IPv4 / IPv6 (default: whatever the system picks)
     notify: Notify | None = None
     messages: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self):
         _check_messages(self.messages)
+        if self.ip_version not in (None, 4, 6):
+            raise ValueError(f"{self.name}: ip_version must be 4 or 6")
         if self.type not in ("http", "tcp", "ping"):
             raise ValueError(f"{self.name}: unknown type {self.type}")
         if self.type == "http" and not self.url:
