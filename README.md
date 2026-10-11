@@ -45,7 +45,7 @@ uv run pulsecheck report [--json]
 ```
 shoutrrr runs from its docker image when Docker works, otherwise from the `shoutrrr` binary on `PATH`. `ping` is needed for `type: ping`.
 
-Use **Use this template** to get your own copy with the GitHub Actions workflow ready. **Keep your copy private**: your `pulsecheck.yml` lists your hostnames.
+Want it running on GitHub Actions with the fewest files? Click **Use this template** on [pulsecheck-template](https://github.com/arian24b/pulsecheck-template): you get just `pulsecheck.yml`, one workflow and a short README. **Keep your copy private**: `pulsecheck.yml` lists your hostnames.
 
 ## Documentation (wiki)
 | | English | فارسی |

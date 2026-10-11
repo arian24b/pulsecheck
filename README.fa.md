@@ -48,7 +48,7 @@ uv run pulsecheck report [--json]
 ```
 اگر Docker کار کند shoutrrr از image داکرش اجرا می‌شود، وگرنه از فایل اجرایی `shoutrrr` در `PATH` (با `shoutrrr_bin` در تنظیمات می‌توانید این را عوض کنید). برای `type: ping` به دستور `ping` نیاز دارید.
 
-با **Use this template** کپی خودتان را بسازید؛ workflow مربوط به GitHub Actions از قبل آماده است. **کپی خودتان را خصوصی نگه دارید**، چون `pulsecheck.yml` نام سرورهای شما را در خود دارد.
+اگر می‌خواهید با کمترین فایل روی GitHub Actions اجرایش کنید، در [pulsecheck-template](https://github.com/arian24b/pulsecheck-template) روی **Use this template** بزنید: فقط `pulsecheck.yml`، یک workflow و یک README کوتاه می‌گیرید. **کپی خودتان را خصوصی نگه دارید**، چون `pulsecheck.yml` نام سرورهای شما را در خود دارد.
 
 ## مستندات (ویکی)
 | | English | فارسی |
