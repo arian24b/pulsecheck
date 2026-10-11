@@ -26,7 +26,7 @@ Releases are automatic, so commit messages matter. Use `<type>(<scope>): <subjec
 The PyPI project is **`pulsecheckcli`** (the commands are `pulsecheck` and `pck`). The pipeline is `.github/workflows/publish.yml` and uses python-semantic-release plus a PyPI Trusted Publisher, so no token is stored anywhere:
 1. One time on pypi.org: the publisher for project `pulsecheckcli`, owner `arian24b`, repository `pulsecheck`, workflow `publish.yml`, environment `pypi`. The `pypi` environment already exists on GitHub.
 2. Merge to `main`. When CI passes, the `publish` workflow reads the commits since the last tag, bumps `version` in `pyproject.toml`, updates `CHANGELOG.md`, tags `vX.Y.Z`, creates the GitHub release, builds and uploads to PyPI. The very first run releases the version already in `pyproject.toml` (0.1.0).
-3. Safety switch: automatic releases only run when the repository variable `AUTO_RELEASE` is `true` (`gh variable set AUTO_RELEASE --body true`). *Actions → publish → Run workflow* always works and can force `patch`, `minor` or `major`.
+3. It is fully automatic: no switch, no manual step. *Actions → publish → Run workflow* can also force `patch`, `minor` or `major`.
 Never edit `version` or `CHANGELOG.md` by hand.
 
 ## Documentation

@@ -3,9 +3,8 @@
 # Trusted Publisher (OIDC, no token). The PyPI publisher is registered for: project pulsecheckcli, owner arian24b,
 # repository pulsecheck, workflow publish.yml, environment pypi.
 #
-# Safety switch: automatic releases run only when the repository variable AUTO_RELEASE is "true"
-#   gh variable set AUTO_RELEASE --body true -R arian24b/pulsecheck
-# "Run workflow" (workflow_dispatch) always works, and can force a bump level.
+# Fully automatic: every time CI passes on main, releasable commits (feat, fix, perf, breaking) make a new release.
+# "Run workflow" (workflow_dispatch) can also force a bump level.
 name: publish
 on:
   workflow_run:
@@ -26,7 +25,7 @@ permissions:
 
 jobs:
   release:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && vars.AUTO_RELEASE == 'true') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
