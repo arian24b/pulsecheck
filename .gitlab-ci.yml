@@ -1,0 +1,15 @@
+# Create a pipeline schedule (CI/CD > Schedules) with cron "*/5 * * * *".
+monitor:
+  image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  variables:
+    SHOUTRRR_VERSION: "0.21.2"
+  cache:
+    key: pulsecheck-state
+    paths: [pulsecheck.db]
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl iputils-ping
+    - curl -fsSL "https://github.com/nicholas-fedor/shoutrrr/releases/download/v${SHOUTRRR_VERSION}/shoutrrr_linux_amd64_${SHOUTRRR_VERSION}.tar.gz" | tar xz -C /usr/local/bin shoutrrr
+  script:
+    - uv run pulsecheck -c pulsecheck.yml run   # secrets come from CI/CD variables

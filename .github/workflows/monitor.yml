@@ -1,0 +1,37 @@
+name: monitor
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+concurrency: monitor
+
+env:
+  SHOUTRRR_VERSION: "0.21.2"
+
+jobs:
+  check:
+    # keeps the template repo itself quiet; copies under any other name run
+    if: github.repository != 'arian24b/pulsecheck'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Restore state
+        uses: actions/cache/restore@v4
+        with:
+          path: pulsecheck.db
+          key: state-${{ github.run_id }}
+          restore-keys: state-
+      - name: Install shoutrrr
+        run: |
+          curl -fsSL "https://github.com/nicholas-fedor/shoutrrr/releases/download/v${SHOUTRRR_VERSION}/shoutrrr_linux_amd64_${SHOUTRRR_VERSION}.tar.gz" | tar xz -C /usr/local/bin shoutrrr
+      - name: Run checks
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+        run: uv run pulsecheck -c pulsecheck.yml run
+      - name: Save state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: pulsecheck.db
+          key: state-${{ github.run_id }}

@@ -1,0 +1,33 @@
+# Run `pulsecheck -c pulsecheck.yml validate` to check this file.
+# ${VAR} is replaced from the environment (use CI secrets for tokens).
+state_file: pulsecheck.db        # keeps up/down state + history between runs
+shoutrrr_bin: shoutrrr           # path to the shoutrrr binary
+
+notify:                          # global; a site may override with its own notify:
+  urls:
+    - slack://${SLACK_TOKEN}@webhook
+    # - telegram://${TG_TOKEN}@telegram?chats=@mychannel
+  events: [down, up, degraded]
+
+defaults:                        # merged into every site
+  timeout: 10                    # seconds
+  down_after: 2                  # consecutive failures before alerting
+  interval: 5                    # minutes between checks of a site
+  slow_ms: 3000                  # >= this = degraded
+
+maintenance:                     # UTC; alerts suppressed while active
+  - {name: weekly, start: "SUN 02:00", duration: 60}   # minutes; add sites: [web] to scope
+
+sites:
+  - name: web
+    url: https://example.com
+    expected_status: [200, 301]  # default: any 2xx
+    max_response_ms: 10000       # slower = down
+  - name: api
+    url: https://example.com/health
+    method: POST
+    headers: {Authorization: "Bearer ${API_TOKEN}"}
+    body: '{"ping": true}'
+    max_redirects: 3
+  - {name: db, type: tcp, host: db.internal, port: 5432}
+  - {name: gateway, type: ping, host: 10.0.0.1}

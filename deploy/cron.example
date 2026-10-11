@@ -1,0 +1,2 @@
+# crontab -e   (install shoutrrr and uv first; state lives in state_file on disk)
+*/5 * * * * cd /opt/pulsecheck && SLACK_TOKEN=xxx uv run pulsecheck -c pulsecheck.yml run >> /var/log/pulsecheck.log 2>&1
