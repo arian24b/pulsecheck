@@ -45,6 +45,8 @@ shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌ش�
 | GitHub / GitLab / cron | [Scheduling](docs/en/Scheduling.md) | [زمان‌بندی](docs/fa/Scheduling.md) |
 | مشکلات | [Troubleshooting](docs/en/Troubleshooting.md) | [عیب‌یابی](docs/fa/Troubleshooting.md) |
 
+همین مستندات در [ویکی گیت‌هاب](https://github.com/arian24b/pulsecheck/wiki) هم هست (انگلیسی و فارسی؛ `deploy/sync-wiki.sh` آن را از `docs/` به‌روز می‌کند).
+
 ## توسعه
 ```bash
 uv run pytest

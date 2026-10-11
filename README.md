@@ -43,6 +43,8 @@ Use **Use this template** on GitHub to get your own copy with the GitHub Actions
 | GitHub / GitLab / cron | [Scheduling](docs/en/Scheduling.md) | [زمان‌بندی](docs/fa/Scheduling.md) |
 | Problems | [Troubleshooting](docs/en/Troubleshooting.md) | [عیب‌یابی](docs/fa/Troubleshooting.md) |
 
+Also published as the [GitHub wiki](https://github.com/arian24b/pulsecheck/wiki) (English and Persian; `deploy/sync-wiki.sh` refreshes it from `docs/`).
+
 ## Development
 ```bash
 uv run pytest
