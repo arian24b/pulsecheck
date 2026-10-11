@@ -16,7 +16,13 @@
 - اجرا با GitHub Actions، GitLab CI یا cron
 - پایتون ۳٫۱۲ تا ۳٫۱۵ (ترجیحاً ۳٫۱۵) با [uv](https://docs.astral.sh/uv/)
 
-## شروع سریع
+## نصب روی لینوکس (یک دستور)
+```bash
+curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
+```
+بعد `~/.config/pulsecheck/pulsecheck.yml` را ویرایش کنید و `pulsecheck -c ~/.config/pulsecheck/pulsecheck.yml validate` را اجرا کنید.
+
+## شروع سریع (از یک clone)
 ```bash
 uv sync
 cp pulsecheck.example.yml pulsecheck.yml     # ویرایشش کنید
@@ -25,7 +31,7 @@ uv run pulsecheck test-notify
 uv run pulsecheck run [--force] [--fail-on-down]
 uv run pulsecheck report [--json]
 ```
-فایل اجرایی `shoutrrr` باید در `PATH` باشد (یا `shoutrrr_bin` را در تنظیمات بدهید) و برای `type: ping` دستور `ping` لازم است.
+shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌شود، وگرنه از فایل اجرایی `shoutrrr` در `PATH` (با `shoutrrr_bin` در تنظیمات قابل تغییر است). برای `type: ping` دستور `ping` لازم است.
 
 در گیت‌هاب با **Use this template** کپی خودتان را بسازید؛ workflow مربوط به GitHub Actions آماده است. برای GitLab فایل `.gitlab-ci.yml` و برای cron فایل `deploy/cron.example` را استفاده کنید.
 

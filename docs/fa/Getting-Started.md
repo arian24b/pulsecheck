@@ -4,12 +4,19 @@
 
 **زبان:** [English](../en/Getting-Started.md) · فارسی
 
-## پیش‌نیازها
+## نصب با یک دستور (لینوکس)
+```bash
+curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
+```
+این اسکریپت در صورت نبودن uv آن را نصب می‌کند، کد را در `~/.local/share/pulsecheck` می‌گذارد، دستور `pulsecheck` را در `~/.local/bin` می‌سازد، shoutrrr را آماده می‌کند (image داکر اگر Docker کار کند، وگرنه فایل اجرایی) و فایل `~/.config/pulsecheck/pulsecheck.yml` را می‌سازد. برای به‌روزرسانی دوباره اجرایش کنید. بعد: `pulsecheck -c ~/.config/pulsecheck/pulsecheck.yml validate`. تنظیمات اسکریپت (`PULSECHECK_HOME`، `PULSECHECK_BIN`، `PULSECHECK_CONFIG`، `PULSECHECK_REF`، `SHOUTRRR_VERSION`، `PULSECHECK_SHOUTRRR=binary`) بالای فایل `install.sh` توضیح داده شده است.
+
+## نصب دستی
+### پیش‌نیازها
 - [uv](https://docs.astral.sh/uv/) (پایتون مناسب را خودش نصب می‌کند؛ پایتون ۳٫۱۲ تا ۳٫۱۵ پشتیبانی می‌شود و ۳٫۱۵ ترجیح داده می‌شود)
-- فایل اجرایی `shoutrrr` در `PATH` (بخش [اعلان‌ها](Notifications.md))
+- Docker، **یا** فایل اجرایی `shoutrrr` در `PATH` (بخش [اعلان‌ها](Notifications.md))
 - دستور `ping` فقط اگر از `type: ping` استفاده می‌کنید (در لینوکس بسته `iputils-ping`)
 
-## نصب
+### گرفتن کد
 ```bash
 git clone https://github.com/arian24b/pulsecheck && cd pulsecheck
 # یا در گیت‌هاب روی «Use this template» بزنید تا کپی مخصوص خودتان ساخته شود

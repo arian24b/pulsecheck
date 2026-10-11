@@ -23,7 +23,8 @@ sites:
 | کلید | پیش‌فرض | توضیح |
 |---|---|---|
 | `state_file` | `pulsecheck.db` | فایل SQLite برای وضعیت فعلی و تاریخچه بررسی‌ها (۴۰۰ روز نگهداری می‌شود) |
-| `shoutrrr_bin` | `shoutrrr` | مسیر فایل اجرایی shoutrrr |
+| `shoutrrr_bin` | `auto` | `auto` (image داکر اگر Docker کار کند، وگرنه فایل اجرایی `shoutrrr`)، `docker` یا مسیر یک فایل اجرایی |
+| `shoutrrr_image` | `nickfedor/shoutrrr:0.21.2` | image داکر برای حالت `auto` و `docker` |
 | `notify` | ندارد | مقصدهای سراسری هشدار (پایین‌تر توضیح داده شده) |
 | `defaults` | `{}` | هر کلید سایت؛ به همه سایت‌ها اضافه می‌شود (مقدار خود سایت اولویت دارد) |
 | `maintenance` | `[]` | بازه‌هایی که هشدارها ارسال نمی‌شوند |

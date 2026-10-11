@@ -2,7 +2,15 @@
 
 **Language:** English · [فارسی](../fa/Notifications.md)
 
-pulsecheck calls `shoutrrr send --url <url> --message <text>` for every URL. Install the binary from the [releases page](https://github.com/nicholas-fedor/shoutrrr/releases):
+pulsecheck calls `shoutrrr send --url <url> --message <text>` for every URL. How shoutrrr is started is set by `shoutrrr_bin`:
+
+| Value | Behaviour |
+|---|---|
+| `auto` (default) | `docker run --rm nickfedor/shoutrrr:<version> send …` if Docker works (`docker info` succeeds), otherwise the `shoutrrr` binary on `PATH` |
+| `docker` | Always the docker image |
+| a path, e.g. `/usr/local/bin/shoutrrr` | Always that binary |
+
+`shoutrrr_image` (default `nickfedor/shoutrrr:0.21.2`) chooses the image; the first send pulls it. Without Docker, install the binary from the [releases page](https://github.com/nicholas-fedor/shoutrrr/releases) (`install.sh` does this for you):
 
 ```bash
 curl -fsSL https://github.com/nicholas-fedor/shoutrrr/releases/download/v0.21.2/shoutrrr_linux_amd64_0.21.2.tar.gz | sudo tar xz -C /usr/local/bin shoutrrr

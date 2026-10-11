@@ -14,7 +14,13 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 - Runs from GitHub Actions, GitLab CI or cron
 - Python 3.12–3.15 (3.15 preferred), managed with [uv](https://docs.astral.sh/uv/)
 
-## Quick start
+## Install on Linux (one line)
+```bash
+curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh | bash
+```
+Then edit `~/.config/pulsecheck/pulsecheck.yml` and run `pulsecheck -c ~/.config/pulsecheck/pulsecheck.yml validate`.
+
+## Quick start (from a clone)
 ```bash
 uv sync
 cp pulsecheck.example.yml pulsecheck.yml     # edit it
@@ -23,7 +29,7 @@ uv run pulsecheck test-notify
 uv run pulsecheck run [--force] [--fail-on-down]
 uv run pulsecheck report [--json]
 ```
-Needs the `shoutrrr` binary on `PATH` (or `shoutrrr_bin` in the config) and `ping` for `type: ping`.
+shoutrrr runs from its docker image when Docker works, otherwise from the `shoutrrr` binary on `PATH` (`shoutrrr_bin` in the config overrides this). `ping` is needed for `type: ping`.
 
 Use **Use this template** on GitHub to get your own copy with the GitHub Actions workflow ready, or keep `.gitlab-ci.yml` for GitLab and `deploy/cron.example` for cron.
 

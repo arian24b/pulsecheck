@@ -21,7 +21,8 @@ sites:
 | Key | Default | Meaning |
 |---|---|---|
 | `state_file` | `pulsecheck.db` | SQLite file holding current state and check history (kept 400 days) |
-| `shoutrrr_bin` | `shoutrrr` | Path to the shoutrrr binary |
+| `shoutrrr_bin` | `auto` | `auto` (docker image if Docker works, else the `shoutrrr` binary), `docker`, or a path to a binary |
+| `shoutrrr_image` | `nickfedor/shoutrrr:0.21.2` | Docker image used in `auto`/`docker` mode |
 | `notify` | none | Global alert targets, see below |
 | `defaults` | `{}` | Any site key; merged into every site (a site's own value wins) |
 | `maintenance` | `[]` | Windows where alerts are suppressed |

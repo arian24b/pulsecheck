@@ -4,7 +4,15 @@
 
 **زبان:** [English](../en/Notifications.md) · فارسی
 
-pulsecheck برای هر آدرس دستور `shoutrrr send --url <url> --message <text>` را اجرا می‌کند. فایل اجرایی را از [صفحه releases](https://github.com/nicholas-fedor/shoutrrr/releases) نصب کنید:
+pulsecheck برای هر آدرس دستور `shoutrrr send --url <url> --message <text>` را اجرا می‌کند. نحوه اجرای shoutrrr را `shoutrrr_bin` تعیین می‌کند:
+
+| مقدار | رفتار |
+|---|---|
+| `auto` (پیش‌فرض) | اگر Docker کار کند (`docker info` موفق باشد) `docker run --rm nickfedor/shoutrrr:<version> send …`، وگرنه فایل اجرایی `shoutrrr` در `PATH` |
+| `docker` | همیشه image داکر |
+| یک مسیر، مثل `/usr/local/bin/shoutrrr` | همیشه همان فایل اجرایی |
+
+`shoutrrr_image` (پیش‌فرض `nickfedor/shoutrrr:0.21.2`) image را مشخص می‌کند؛ اولین ارسال آن را دانلود می‌کند. بدون Docker فایل اجرایی را از [صفحه releases](https://github.com/nicholas-fedor/shoutrrr/releases) نصب کنید (`install.sh` این کار را خودش می‌کند):
 
 ```bash
 curl -fsSL https://github.com/nicholas-fedor/shoutrrr/releases/download/v0.21.2/shoutrrr_linux_amd64_0.21.2.tar.gz | sudo tar xz -C /usr/local/bin shoutrrr

@@ -8,7 +8,8 @@
 |---|---|
 | `config error: env var X is not set` | فایل از `${X}` استفاده می‌کند ولی متغیر export نشده. آن را تنظیم کنید یا secret را به `env:` مرحله CI اضافه کنید. |
 | هنگام down بودن سایت هشداری نمی‌آید | سایت باید `down_after` بار پشت‌سرهم شکست بخورد (پیش‌فرض ۲). `events`، فعال‌بودن بازه maintenance (به UTC) و پیام `notify failed` در stderr را بررسی کنید. |
-| `notify failed: ... executable file not found` | shoutrrr در `PATH` نیست. نصبش کنید یا `shoutrrr_bin` را تنظیم کنید. |
+| `notify failed: ... No such file or directory: 'shoutrrr'` | نه Docker قابل‌استفاده است و نه فایل اجرایی در `PATH`. Docker را روشن کنید، فایل اجرایی را نصب کنید (`install.sh` انجام می‌دهد) یا `shoutrrr_bin` را تنظیم کنید. |
+| Docker نصب است ولی فایل اجرایی استفاده می‌شود | `docker info` برای کاربر شما شکست می‌خورد (daemon خاموش است یا دسترسی نیست). درستش کنید یا `shoutrrr_bin: docker` بگذارید. |
 | `notify failed:` همراه با خطای shoutrrr | آدرس یا توکن اشتباه است. `shoutrrr verify --url ...` و `pulsecheck test-notify` را اجرا کنید. |
 | هشدار DOWN مدام تکرار می‌شود | وضعیت بین اجراها از بین رفته (حذف cache، runnerهای بدون cache مشترک، کانتینر بدون volume). `state_file` را روی ذخیره‌سازی پایدار بگذارید. |
 | سایت بین up و degraded نوسان می‌کند | `slow_ms` به زمان پاسخ معمول نزدیک است. آن را بالاتر ببرید. |

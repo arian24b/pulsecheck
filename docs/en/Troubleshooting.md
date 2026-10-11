@@ -6,7 +6,8 @@
 |---|---|
 | `config error: env var X is not set` | The file uses `${X}` but it is not exported. Set it, or add the secret to the CI job's `env:`. |
 | No alert when a site is down | It must fail `down_after` times in a row (default 2). Check `events`, an active maintenance window (UTC), and stderr for `notify failed`. |
-| `notify failed: ... executable file not found` | shoutrrr is not on `PATH`. Install it or set `shoutrrr_bin`. |
+| `notify failed: ... No such file or directory: 'shoutrrr'` | No usable Docker and no binary on `PATH`. Start Docker, install the binary (`install.sh` does it) or set `shoutrrr_bin`. |
+| Docker is installed but the binary is used | `docker info` fails for your user (daemon stopped, no permission). Fix that or set `shoutrrr_bin: docker`. |
 | `notify failed:` plus a shoutrrr error | Wrong URL or token. Run `shoutrrr verify --url ...` and `pulsecheck test-notify`. |
 | Same DOWN alert again and again | State was lost between runs (cache evicted, runners without shared cache, container without a volume). Keep `state_file` on persistent storage. |
 | Site flaps between up and degraded | `slow_ms` is close to the normal response time. Raise it. |
