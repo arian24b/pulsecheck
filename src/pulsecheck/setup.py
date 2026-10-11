@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
+PACKAGE = "pulsecheckcli"  # name on PyPI (the command and the import package are both "pulsecheck")
 BEGIN = "# >>> pulsecheck (managed by `pulsecheck init`) >>>"
 END = "# <<< pulsecheck <<<"
 DEFAULT_CRON = "*/5 * * * *"
@@ -72,7 +73,7 @@ def example_text() -> str:
 
 def installed_version() -> str:
     try:
-        return importlib.metadata.version("pulsecheck")
+        return importlib.metadata.version(PACKAGE)
     except importlib.metadata.PackageNotFoundError:
         return "unknown"
 
@@ -192,13 +193,13 @@ def upgrade_command() -> list[str]:
     """How this copy of pulsecheck was installed decides how to upgrade it."""
     prefix = Path(sys.prefix).as_posix()
     if "/uv/tools/" in prefix:
-        return ["uv", "tool", "upgrade", "pulsecheck"]
+        return ["uv", "tool", "upgrade", PACKAGE]
     if "/pipx/venvs/" in prefix:
-        return ["pipx", "upgrade", "pulsecheck"]
+        return ["pipx", "upgrade", PACKAGE]
     repo = Path(__file__).resolve().parents[2]
     if (repo / ".git").exists():  # install.sh / git clone
         return ["sh", "-c", f"git -C {shlex.quote(str(repo))} pull --ff-only && uv sync --project {shlex.quote(str(repo))} --no-dev -q"]
-    return [sys.executable, "-m", "pip", "install", "--upgrade", "pulsecheck"]
+    return [sys.executable, "-m", "pip", "install", "--upgrade", PACKAGE]
 
 
 def latest_version(timeout: int = 15) -> str | None:
@@ -206,6 +207,6 @@ def latest_version(timeout: int = 15) -> str | None:
     import urllib.request
 
     try:
-        return json.load(urllib.request.urlopen("https://pypi.org/pypi/pulsecheck/json", timeout=timeout))["info"]["version"]
+        return json.load(urllib.request.urlopen(f"https://pypi.org/pypi/{PACKAGE}/json", timeout=timeout))["info"]["version"]
     except Exception:
         return None

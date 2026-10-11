@@ -108,10 +108,10 @@ def test_dotenv_and_cron_block(tmp_path, monkeypatch):
 def test_upgrade_command_and_step_helpers(monkeypatch):
     from pulsecheck import setup
 
-    monkeypatch.setattr(setup.sys, "prefix", "/home/u/.local/share/uv/tools/pulsecheck")
-    assert setup.upgrade_command() == ["uv", "tool", "upgrade", "pulsecheck"]
-    monkeypatch.setattr(setup.sys, "prefix", "/home/u/.local/pipx/venvs/pulsecheck")
-    assert setup.upgrade_command() == ["pipx", "upgrade", "pulsecheck"]
+    monkeypatch.setattr(setup.sys, "prefix", "/home/u/.local/share/uv/tools/pulsecheckcli")
+    assert setup.upgrade_command() == ["uv", "tool", "upgrade", "pulsecheckcli"]
+    monkeypatch.setattr(setup.sys, "prefix", "/home/u/.local/pipx/venvs/pulsecheckcli")
+    assert setup.upgrade_command() == ["pipx", "upgrade", "pulsecheckcli"]
 
 
 def test_init_creates_files_and_cron(tmp_path, monkeypatch):

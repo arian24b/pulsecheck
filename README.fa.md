@@ -22,7 +22,7 @@
 
 ## نصب
 ```bash
-uv tool install pulsecheck        # یا: pipx install pulsecheck   (بعد از اولین انتشار در PyPI)
+uv tool install pulsecheckcli     # یا: pipx install pulsecheckcli   (بعد از اولین انتشار در PyPI)
 pulsecheck init                   # تنظیمات + .env + shoutrrr + cron job (لینوکس)
 pulsecheck env                    # توکن‌ها را اضافه کنید
 pulsecheck validate && pulsecheck test-notify

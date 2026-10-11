@@ -20,7 +20,7 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 
 ## Install
 ```bash
-uv tool install pulsecheck        # or: pipx install pulsecheck   (once the first release is on PyPI)
+uv tool install pulsecheckcli     # or: pipx install pulsecheckcli   (once the first release is on PyPI)
 pulsecheck init                   # config + .env + shoutrrr + cron job (Linux)
 pulsecheck env                    # add your tokens
 pulsecheck validate && pulsecheck test-notify

@@ -19,7 +19,7 @@ Python 3.12 to 3.15 are supported (3.15 preferred).
 
 ## Releasing to PyPI (maintainers)
 Publishing uses a PyPI **Trusted Publisher** (OpenID Connect), so no API token is stored anywhere.
-1. One time on pypi.org: *Your account → Publishing → Add a pending publisher*: project `pulsecheck`, owner `arian24b`, repository `pulsecheck`, workflow `publish.yml`, environment `pypi`. The `pypi` environment already exists on GitHub (optionally add required reviewers).
+1. One time on pypi.org: *Your account → Publishing → Add a pending publisher*: project `pulsecheckcli`, owner `arian24b`, repository `pulsecheck`, workflow `publish.yml`, environment `pypi`. The `pypi` environment already exists on GitHub (optionally add required reviewers).
 2. Bump `version` in `pyproject.toml` and merge it.
 3. Create a GitHub release with the tag `v<version>` (for example `v0.1.0`). The `publish` workflow builds, checks that the tag matches the version, and uploads. `workflow_dispatch` only builds and runs `twine check`.
 

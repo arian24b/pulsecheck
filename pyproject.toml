@@ -1,5 +1,5 @@
 [project]
-name = "pulsecheck"
+name = "pulsecheckcli"
 version = "0.1.0"
 description = "Self-hosted uptime monitor: HTTP/TCP/ping/TLS checks, shoutrrr alerts, OpenTelemetry export. Runs from cron, CI or serverless."
 readme = "README.md"
@@ -33,6 +33,9 @@ Changelog = "https://github.com/arian24b/pulsecheck/releases"
 
 [project.scripts]
 pulsecheck = "pulsecheck.cli:main"
+
+[tool.uv.build-backend]
+module-name = "pulsecheck"  # the PyPI project is pulsecheckcli; the import name and the command stay pulsecheck
 
 [build-system]
 requires = ["uv_build>=0.11.25,<0.12.0"]
