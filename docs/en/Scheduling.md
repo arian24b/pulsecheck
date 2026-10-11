@@ -23,6 +23,9 @@ Notes
 4. **Settings → CI/CD → Variables**: add every `${VAR}` your file uses (mask the secrets).
 5. The job only runs for scheduled pipelines and caches `pulsecheck.db` under one key. If your runners do not share a cache, state is lost between runs (see [Troubleshooting](Troubleshooting.md)).
 
+## Vercel and Cloudflare Workers
+Both have their own cron and their own limits (Vercel Hobby: one run per day; Cloudflare Free: 10 ms CPU per run). Setup and every limit are on the [Serverless](Serverless.md) page.
+
 ## Linux cron
 ```bash
 # crontab -e

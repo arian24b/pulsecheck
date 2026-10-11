@@ -16,6 +16,13 @@
 | ping در Docker/CI همیشه شکست می‌خورد | `iputils-ping` را نصب کنید؛ بعضی کانتینرها raw socket را هم ممنوع می‌کنند. به‌جایش از `type: tcp` استفاده کنید. |
 | خطای گواهی HTTPS | بررسی با همان خطا که در هشدار آمده شکست می‌خورد. گواهی را درست کنید؛ گزینه‌ای برای نادیده‌گرفتن اعتبارسنجی نیست. |
 | اجرای زمان‌بندی‌شده گیت‌هاب متوقف شد | بعد از ۶۰ روز بی‌فعالیتی مخزن، زمان‌بندی متوقف می‌شود. در تب Actions دوباره فعالش کنید. |
+| endpoint در Vercel جواب `401` می‌دهد | `CRON_SECRET` تنظیم نشده یا هدر `Authorization: Bearer …` با آن برابر نیست. |
+| Vercel جواب `500 … state store missing` می‌دهد | Upstash Redis را اضافه کنید (`vercel install upstash`) یا `UPSTASH_REDIS_REST_URL` و `UPSTASH_REDIS_REST_TOKEN` را تنظیم کنید. |
+| deploy در Vercel روی عبارت cron خطا می‌دهد | Hobby فقط روزی یک اجرا می‌پذیرد. از `0 0 * * *` استفاده کنید یا endpoint را از گیت‌هاب صدا بزنید (بخش [سرورلس](Serverless.md)). |
+| `notify failed: 'xyz://' is not supported here` | Vercel/Cloudflare فقط آدرس‌های telegram، discord، ntfy و generic را می‌فرستند. برای سرویس‌های دیگر از حالت دیگری استفاده کنید. |
+| `skipped, type 'tcp' is not supported on this platform` | Cloudflare فقط بررسی HTTP دارد؛ Vercel هم `ping` را رد می‌کند. |
+| اجرای Cloudflare با «exceeded CPU time» متوقف می‌شود | پلن رایگان برای هر اجرای cron ۱۰ میلی‌ثانیه CPU می‌دهد. پلن پولی را استفاده کنید. |
+| خطای نوشتن KV در Cloudflare بعد از چند ساعت | KV رایگان روزی ۱۰۰۰ نوشتن می‌دهد؛ cron یک‌دقیقه‌ای ۱۴۴۰ می‌خواهد. بازه ۲ دقیقه یا بیشتر یا پلن پولی. |
 
 نکته برای اشکال‌زدایی: `uv run pulsecheck run --force` برای هر سایت یک خط با وضعیت، زمان و خطا چاپ می‌کند.
 

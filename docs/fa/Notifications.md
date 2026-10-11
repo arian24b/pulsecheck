@@ -37,6 +37,8 @@ shoutrrr docs telegram   # گزینه‌های یک سرویس
 shoutrrr verify --url "<url>"   # بررسی آدرس بدون ارسال
 shoutrrr generate telegram      # ساخت آدرس به‌صورت تعاملی
 ```
+**Vercel و Cloudflare Workers** نمی‌توانند shoutrrr را اجرا کنند، پس هشدار را با فراخوانی ساده HTTPS می‌فرستند و فقط آدرس‌های `telegram://`، `discord://`، `ntfy://` و `generic://` را می‌شناسند (همان قالب بالا؛ `generic://` گزینه‌های `?disabletls=yes` و `?messagekey=` را می‌پذیرد). آدرس‌های دیگر پیام `notify failed: … not supported here` چاپ می‌کنند و چیزی ارسال نمی‌شود. بخش [سرورلس](Serverless.md) را ببینید.
+
 آدرس‌ها حاوی اطلاعات محرمانه‌اند: توکن‌ها را در متغیر محیطی (`${TG_TOKEN}`) یا secret سیستم CI نگه دارید، نه داخل فایل.
 
 ## مسیردهی

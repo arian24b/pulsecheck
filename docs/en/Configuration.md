@@ -4,6 +4,8 @@
 
 Default file name: `pulsecheck.yml` (change with `-c`). Any `${NAME}` inside a value is replaced with the environment variable `NAME`. A missing variable is an error, so keep secrets out of the file.
 
+> Inside inline `{ ... }` mappings, quote values that contain `${VAR}`: `{name: api, url: "https://x.example.com/${TOKEN}"}`.
+
 ```yaml
 state_file: pulsecheck.db
 shoutrrr_bin: shoutrrr
@@ -86,4 +88,4 @@ sites:
 ```
 
 ## Reports
-`pulsecheck report` shows, for day / week / month / year: uptime %, average and p95 response time of successful checks, and the number of checks. `--json` prints the same data for scripts.
+`pulsecheck report` shows, for day / week / month / year: uptime %, average and p95 response time of successful checks, and the number of checks. `--json` prints the same data for scripts. On Vercel/Cloudflare the state store keeps daily totals only, so `report` there has no p95 and covers the last 90 days.

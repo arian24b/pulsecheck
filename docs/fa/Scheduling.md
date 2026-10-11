@@ -25,6 +25,9 @@ pulsecheck یک‌بار اجرا می‌شود و تمام می‌شود. چی�
 4. **Settings ← CI/CD ← Variables**: همه `${VAR}`هایی که فایل استفاده می‌کند را اضافه کنید (رمزها را mask کنید).
 5. job فقط برای pipelineهای زمان‌بندی‌شده اجرا می‌شود و `pulsecheck.db` را با یک کلید در cache نگه می‌دارد. اگر runnerهای شما cache مشترک ندارند وضعیت بین اجراها از بین می‌رود (بخش [عیب‌یابی](Troubleshooting.md)).
 
+## Vercel و Cloudflare Workers
+هر دو cron و محدودیت‌های خودشان را دارند (Vercel Hobby: روزی یک اجرا؛ Cloudflare رایگان: ۱۰ میلی‌ثانیه CPU برای هر اجرا). راه‌اندازی و همه محدودیت‌ها در صفحه [سرورلس](Serverless.md) است.
+
 ## کرون لینوکس
 ```bash
 # crontab -e

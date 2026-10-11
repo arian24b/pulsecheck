@@ -14,5 +14,12 @@
 | Ping always fails in Docker/CI | Install `iputils-ping`; some containers also forbid raw sockets. Use `type: tcp` instead. |
 | HTTPS certificate error | The check fails with the error shown in the alert. Fix the certificate; there is no option to skip verification. |
 | Scheduled GitHub run stopped | Schedules pause after 60 days without repository activity. Re-enable in the Actions tab. |
+| Vercel endpoint answers `401` | `CRON_SECRET` is unset or the `Authorization: Bearer …` header does not match it. |
+| Vercel answers `500 … state store missing` | Add Upstash Redis (`vercel install upstash`) or set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. |
+| Vercel deploy fails on the cron expression | Hobby accepts one run per day only. Use `0 0 * * *`, or call the endpoint from GitHub (see [Serverless](Serverless.md)). |
+| `notify failed: 'xyz://' is not supported here` | Vercel/Cloudflare only send telegram, discord, ntfy and generic URLs. Use another mode for other services. |
+| `skipped, type 'tcp' is not supported on this platform` | Cloudflare runs HTTP checks only; Vercel also skips `ping`. |
+| Cloudflare run stops with "exceeded CPU time" | The Free plan gives 10 ms CPU per cron run. Use the Paid plan. |
+| Cloudflare KV write errors after some hours | Free KV allows 1,000 writes per day; a 1-minute cron needs 1,440. Use 2+ minutes or the Paid plan. |
 
 Debug tip: `uv run pulsecheck run --force` prints one line per site with status, time and error.

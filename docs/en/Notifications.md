@@ -35,6 +35,8 @@ shoutrrr docs telegram   # options for one service
 shoutrrr verify --url "<url>"   # check a URL without sending
 shoutrrr generate telegram      # build a URL interactively
 ```
+**Vercel and Cloudflare Workers** cannot run shoutrrr, so they send alerts with plain HTTPS calls and understand only `telegram://`, `discord://`, `ntfy://` and `generic://` URLs (same format as above; `generic://` accepts `?disabletls=yes` and `?messagekey=`). Other URLs print `notify failed: … not supported here` and nothing is sent. See [Serverless](Serverless.md).
+
 URLs contain secrets: put tokens in environment variables (`${TG_TOKEN}`) or CI secrets, never in the file.
 
 ## Routing
