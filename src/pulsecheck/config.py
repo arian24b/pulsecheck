@@ -68,7 +68,8 @@ class Maintenance(BaseModel):
 
 class Config(BaseModel):
     state_file: str = "pulsecheck.db"
-    shoutrrr_bin: str = "shoutrrr"
+    shoutrrr_bin: str = "auto"  # auto | docker | path to a shoutrrr binary
+    shoutrrr_image: str = "nickfedor/shoutrrr:0.21.2"
     notify: Notify = Notify()
     defaults: dict = {}
     maintenance: list[Maintenance] = []

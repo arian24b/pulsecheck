@@ -1,7 +1,9 @@
 # Run `pulsecheck -c pulsecheck.yml validate` to check this file.
 # ${VAR} is replaced from the environment (use CI secrets for tokens).
 state_file: pulsecheck.db        # keeps up/down state + history between runs
-shoutrrr_bin: shoutrrr           # path to the shoutrrr binary
+shoutrrr_bin: auto               # auto = docker image if docker works, else the shoutrrr binary;
+                                 # docker = always image; or a path to a binary
+shoutrrr_image: nickfedor/shoutrrr:0.21.2
 
 notify:                          # global; a site may override with its own notify:
   urls:
