@@ -12,6 +12,7 @@ pulsecheck وب‌سایت‌ها، پورت‌های TCP و میزبان‌ها
 | [تنظیمات](Configuration.md) | همه کلیدهای YAML، مقادیر پیش‌فرض، نحوه تصمیم‌گیری برای هشدار |
 | [اعلان‌ها](Notifications.md) | نصب shoutrrr، نمونه آدرس‌ها، مسیردهی |
 | [زمان‌بندی](Scheduling.md) | GitHub Actions، GitLab CI، cron |
+| [سرورلس](Serverless.md) | Vercel و Cloudflare Workers: راه‌اندازی و محدودیت‌های پلتفرم‌ها |
 | [عیب‌یابی](Troubleshooting.md) | مشکلات رایج |
 
 ## هر اجرا چگونه کار می‌کند

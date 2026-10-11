@@ -3,8 +3,6 @@ import subprocess
 import time
 from dataclasses import dataclass
 
-import httpx
-
 from .config import Site
 
 
@@ -17,6 +15,8 @@ class Result:
 
 
 def _http(s: Site) -> Result:
+    import httpx  # lazy: the Cloudflare Worker uses fetch instead
+
     t = time.perf_counter()
     with httpx.Client(follow_redirects=True, max_redirects=s.max_redirects, timeout=s.timeout) as c:
         r = c.request(s.method, s.url, headers=s.headers, content=s.body)
@@ -43,6 +43,10 @@ def run_check(s: Site) -> Result:
         r = {"http": _http, "tcp": _tcp, "ping": _ping}[s.type](s)
     except Exception as e:  # any transport failure is a failed check
         return Result(False, 0, error=f"{type(e).__name__}: {e}")
+    return limit(r, s)
+
+
+def limit(r: Result, s: Site) -> Result:
     if r.ok and s.max_response_ms and r.ms > s.max_response_ms:
         r.ok, r.error = False, f"response {r.ms}ms > max {s.max_response_ms}ms"
     return r

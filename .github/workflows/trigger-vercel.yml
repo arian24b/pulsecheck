@@ -1,0 +1,19 @@
+# Optional: call the Vercel cron endpoint every 5 minutes from GitHub (Vercel Hobby only allows one cron run per day).
+# Set the repository variable VERCEL_CRON_URL (https://<project>.vercel.app/api/cron) and the secret CRON_SECRET.
+name: trigger-vercel
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  call:
+    if: ${{ vars.VERCEL_CRON_URL != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the endpoint
+        env:
+          URL: ${{ vars.VERCEL_CRON_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -fsS --max-time 120 -H "Authorization: Bearer $CRON_SECRET" "$URL"

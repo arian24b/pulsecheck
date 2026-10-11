@@ -12,7 +12,7 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 - Editable alert texts by key (`messages:` in the YAML, global or per site)
 - Per-site check intervals, per-site alert routing, UTC maintenance windows
 - Uptime % and response-time report (`report`, `--json`)
-- Runs from GitHub Actions, GitLab CI or cron
+- Runs from GitHub Actions, GitLab CI or cron, or serverless on Vercel and Cloudflare Workers (with [limits](docs/en/Serverless.md))
 - Python 3.12–3.15 (3.15 preferred), managed with [uv](https://docs.astral.sh/uv/)
 
 ## Install on Linux (one line)
@@ -42,6 +42,7 @@ Use **Use this template** on GitHub to get your own copy with the GitHub Actions
 | Every setting | [Configuration](docs/en/Configuration.md) | [تنظیمات](docs/fa/Configuration.md) |
 | Alert services | [Notifications](docs/en/Notifications.md) | [اعلان‌ها](docs/fa/Notifications.md) |
 | GitHub / GitLab / cron | [Scheduling](docs/en/Scheduling.md) | [زمان‌بندی](docs/fa/Scheduling.md) |
+| Vercel / Cloudflare | [Serverless](docs/en/Serverless.md) | [سرورلس](docs/fa/Serverless.md) |
 | Problems | [Troubleshooting](docs/en/Troubleshooting.md) | [عیب‌یابی](docs/fa/Troubleshooting.md) |
 
 Also published as the [GitHub wiki](https://github.com/arian24b/pulsecheck/wiki) (English and Persian; `deploy/sync-wiki.sh` refreshes it from `docs/`).

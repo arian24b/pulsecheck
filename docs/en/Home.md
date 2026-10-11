@@ -10,6 +10,7 @@ pulsecheck checks your websites, TCP ports and hosts on a schedule and sends ale
 | [Configuration](Configuration.md) | Every YAML key, defaults, how alerts are decided |
 | [Notifications](Notifications.md) | shoutrrr install, URL examples, routing |
 | [Scheduling](Scheduling.md) | GitHub Actions, GitLab CI, cron |
+| [Serverless](Serverless.md) | Vercel and Cloudflare Workers: setup and platform limits |
 | [Troubleshooting](Troubleshooting.md) | Common problems |
 
 ## How a run works

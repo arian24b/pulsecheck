@@ -1,0 +1,6 @@
+src/pulsecheck/
+src/pulsecheck.yml
+.venv*/
+.wrangler/
+node_modules/
+python_modules/

@@ -14,7 +14,7 @@
 - متن هشدارها بر اساس کلید در YAML قابل ویرایش است (`messages:`، سراسری یا برای هر سایت)
 - بازه بررسی جدا برای هر سایت، مسیر هشدار جدا برای هر سایت، بازه نگهداری (maintenance) به وقت UTC
 - گزارش درصد آپتایم و زمان پاسخ (`report` و `--json`)
-- اجرا با GitHub Actions، GitLab CI یا cron
+- اجرا با GitHub Actions، GitLab CI یا cron، یا سرورلس روی Vercel و Cloudflare Workers (با [محدودیت‌ها](docs/fa/Serverless.md))
 - پایتون ۳٫۱۲ تا ۳٫۱۵ (ترجیحاً ۳٫۱۵) با [uv](https://docs.astral.sh/uv/)
 
 ## نصب روی لینوکس (یک دستور)
@@ -44,6 +44,7 @@ shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌ش�
 | همه تنظیمات | [Configuration](docs/en/Configuration.md) | [تنظیمات](docs/fa/Configuration.md) |
 | سرویس‌های هشدار | [Notifications](docs/en/Notifications.md) | [اعلان‌ها](docs/fa/Notifications.md) |
 | GitHub / GitLab / cron | [Scheduling](docs/en/Scheduling.md) | [زمان‌بندی](docs/fa/Scheduling.md) |
+| Vercel / Cloudflare | [Serverless](docs/en/Serverless.md) | [سرورلس](docs/fa/Serverless.md) |
 | مشکلات | [Troubleshooting](docs/en/Troubleshooting.md) | [عیب‌یابی](docs/fa/Troubleshooting.md) |
 
 همین مستندات در [ویکی گیت‌هاب](https://github.com/arian24b/pulsecheck/wiki) هم هست (انگلیسی و فارسی؛ `deploy/sync-wiki.sh` آن را از `docs/` به‌روز می‌کند).

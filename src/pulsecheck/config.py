@@ -99,22 +99,30 @@ class Config(BaseModel):
     sites: list[Site]
 
 
-def _expand(v):
+def _expand(v, env):
     if isinstance(v, str):
         def sub(m):
-            if m[1] not in os.environ:
+            if m[1] not in env:
                 raise ValueError(f"env var {m[1]} is not set")
-            return os.environ[m[1]]
+            return env[m[1]]
         return re.sub(r"\$\{(\w+)\}", sub, v)
     if isinstance(v, list):
-        return [_expand(i) for i in v]
+        return [_expand(i, env) for i in v]
     if isinstance(v, dict):
-        return {k: _expand(i) for k, i in v.items()}
+        return {k: _expand(i, env) for k, i in v.items()}
     return v
 
 
-def load(path: str) -> Config:
-    raw = _expand(YAML(typ="safe").load(open(path)))
+def env_names(text: str) -> set[str]:
+    return set(re.findall(r"\$\{(\w+)\}", text))
+
+
+def load(path: str, env=None) -> Config:
+    return loads(open(path).read(), os.environ if env is None else env)
+
+
+def loads(text: str, env) -> Config:
+    raw = _expand(YAML(typ="safe").load(text), env)
     d = raw.get("defaults", {})
     raw["sites"] = [{**d, **s} for s in raw.get("sites", [])]
     cfg = Config(**raw)
