@@ -1,6 +1,6 @@
 [project]
 name = "pulsecheckcli"
-version = "0.1.0"  # managed by python-semantic-release; the first run publishes exactly this version
+version = "0.2.0"  # managed by python-semantic-release; the first run publishes exactly this version
 description = "Self-hosted uptime monitor: HTTP/TCP/ping/TLS checks, shoutrrr alerts, OpenTelemetry export. Runs from cron, CI or serverless."
 readme = "README.md"
 license = "MIT"
