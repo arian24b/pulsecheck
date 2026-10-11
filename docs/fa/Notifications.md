@@ -1,0 +1,53 @@
+<div dir="rtl" align="right">
+
+# اعلان‌ها
+
+**زبان:** [English](../en/Notifications.md) · فارسی
+
+pulsecheck برای هر آدرس دستور `shoutrrr send --url <url> --message <text>` را اجرا می‌کند. فایل اجرایی را از [صفحه releases](https://github.com/nicholas-fedor/shoutrrr/releases) نصب کنید:
+
+```bash
+curl -fsSL https://github.com/nicholas-fedor/shoutrrr/releases/download/v0.21.2/shoutrrr_linux_amd64_0.21.2.tar.gz | sudo tar xz -C /usr/local/bin shoutrrr
+shoutrrr --version
+```
+برای سیستم‌های دیگر فایل مناسب (`linux_arm64v8`، `macOS_arm64v8` و …) را از همان release بردارید.
+
+## نمونه آدرس‌ها (با shoutrrr نسخه 0.21.2 بررسی شده)
+| سرویس | آدرس |
+|---|---|
+| تلگرام | `telegram://BOT_TOKEN@telegram?chats=@channel` (یا شناسه عددی چت) |
+| دیسکورد | `discord://TOKEN@WEBHOOK_ID` |
+| ntfy | `ntfy://ntfy.sh/your-topic` |
+| ایمیل | `smtp://user:pass@mail.example.com:587/?from=a@example.com&to=b@example.com` |
+| اسلک (بات) | `slack://xoxb:BOT_TOKEN@CHANNEL_ID` |
+| وب‌هوک عمومی | `generic://example.com/hook` |
+
+سرویس‌های بسیار بیشتری هست. دستورهای مفید:
+```bash
+shoutrrr docs            # فهرست سرویس‌ها
+shoutrrr docs telegram   # گزینه‌های یک سرویس
+shoutrrr verify --url "<url>"   # بررسی آدرس بدون ارسال
+shoutrrr generate telegram      # ساخت آدرس به‌صورت تعاملی
+```
+آدرس‌ها حاوی اطلاعات محرمانه‌اند: توکن‌ها را در متغیر محیطی (`${TG_TOKEN}`) یا secret سیستم CI نگه دارید، نه داخل فایل.
+
+## مسیردهی
+```yaml
+notify:                      # به‌طور پیش‌فرض همه‌چیز به اینجا می‌رود
+  urls: ["ntfy://ntfy.sh/team-alerts"]
+  events: [down, up]
+sites:
+  - name: payments
+    url: https://pay.example.com
+    notify:                  # این سایت فقط به کانال آنکال می‌رود، با degraded
+      urls: ["telegram://${TG_TOKEN}@telegram?chats=${ONCALL}"]
+      events: [down, up, degraded]
+```
+هر تغییری را با `uv run pulsecheck test-notify` امتحان کنید (از `notify` سراسری استفاده می‌کند).
+
+## متن پیام‌ها
+- `🔴 web is DOWN: <error>`
+- `🟡 web is slow (3200ms)`
+- `🟢 web is UP (120ms) after 14m`
+
+</div>

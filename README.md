@@ -1,23 +1,46 @@
 # pulsecheck
 
-Self-hosted uptime monitor: HTTP/TCP/ping checks, incident state, maintenance windows, uptime/latency reports, alerts via [shoutrrr](https://github.com/nicholas-fedor/shoutrrr). No dashboard, no git history; state is one SQLite file.
+**English** · [فارسی](README.fa.md)
 
-```
+Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (ping) on a schedule, tracks up / down / slow state, and sends alerts through [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) (Slack, Telegram, Discord, email, ntfy and more). One YAML file, one SQLite state file, no dashboard, no git history.
+
+## Features
+- HTTP checks with method, headers, body, expected status codes, redirect limit, max response time and a "slow" (degraded) threshold
+- TCP and ping checks
+- `${ENV}` substitution, so secrets stay out of the config
+- Alerts only on change, with `down_after` to ignore short blips
+- Per-site check intervals, per-site alert routing, UTC maintenance windows
+- Uptime % and response-time report (`report`, `--json`)
+- Runs from GitHub Actions, GitLab CI or cron
+- Python 3.12–3.15 (3.15 preferred), managed with [uv](https://docs.astral.sh/uv/)
+
+## Quick start
+```bash
 uv sync
-cp pulsecheck.example.yml pulsecheck.yml   # commit it; secrets stay in ${ENV} / CI secrets
+cp pulsecheck.example.yml pulsecheck.yml     # edit it
 uv run pulsecheck validate
 uv run pulsecheck test-notify
 uv run pulsecheck run [--force] [--fail-on-down]
 uv run pulsecheck report [--json]
 ```
+Needs the `shoutrrr` binary on `PATH` (or `shoutrrr_bin` in the config) and `ping` for `type: ping`.
 
-Needs the `shoutrrr` binary on PATH (or set `shoutrrr_bin`) and `ping` for `type: ping`.
+Use **Use this template** on GitHub to get your own copy with the GitHub Actions workflow ready, or keep `.gitlab-ci.yml` for GitLab and `deploy/cron.example` for cron.
 
-## Scheduling
-- **GitHub Actions** (use "Use this template"): commit your `pulsecheck.yml` (the workflow does not run in the template repo itself), add secrets under Settings → Secrets. State persists via `actions/cache`. GitHub's shortest schedule is ~5 min and may be delayed.
-- **GitLab CI**: keep `.gitlab-ci.yml`, add a pipeline schedule and CI/CD variables.
-- **Linux cron**: see `deploy/cron.example`.
+## Documentation
+| | English | فارسی |
+|---|---|---|
+| Overview | [Home](docs/en/Home.md) | [خانه](docs/fa/Home.md) |
+| Install and first run | [Getting started](docs/en/Getting-Started.md) | [شروع سریع](docs/fa/Getting-Started.md) |
+| Every setting | [Configuration](docs/en/Configuration.md) | [تنظیمات](docs/fa/Configuration.md) |
+| Alert services | [Notifications](docs/en/Notifications.md) | [اعلان‌ها](docs/fa/Notifications.md) |
+| GitHub / GitLab / cron | [Scheduling](docs/en/Scheduling.md) | [زمان‌بندی](docs/fa/Scheduling.md) |
+| Problems | [Troubleshooting](docs/en/Troubleshooting.md) | [عیب‌یابی](docs/fa/Troubleshooting.md) |
 
-If state is lost (cache eviction), the only effect is a possible repeated alert and shorter report history.
+## Development
+```bash
+uv run pytest
+```
 
-Supports Python 3.12–3.15 (3.15 preferred, see `.python-version`).
+## License
+MIT

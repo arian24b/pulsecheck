@@ -5,8 +5,7 @@ shoutrrr_bin: shoutrrr           # path to the shoutrrr binary
 
 notify:                          # global; a site may override with its own notify:
   urls:
-    - slack://${SLACK_TOKEN}@webhook
-    # - telegram://${TG_TOKEN}@telegram?chats=@mychannel
+    - telegram://${TG_TOKEN}@telegram?chats=${TG_CHAT}
   events: [down, up, degraded]
 
 defaults:                        # merged into every site

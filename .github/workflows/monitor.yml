@@ -27,7 +27,9 @@ jobs:
           curl -fsSL "https://github.com/nicholas-fedor/shoutrrr/releases/download/v${SHOUTRRR_VERSION}/shoutrrr_linux_amd64_${SHOUTRRR_VERSION}.tar.gz" | tar xz -C /usr/local/bin shoutrrr
       - name: Run checks
         env:
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: uv run pulsecheck -c pulsecheck.yml run
       - name: Save state
         if: always()
