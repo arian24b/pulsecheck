@@ -21,7 +21,7 @@ classifiers = [
 ]
 requires-python = ">=3.12,<3.16"
 dependencies = [
-    "cfui>=0.1.0",
+    "cfuicli>=0.2.0",
     "httpx>=0.28.1",
     "ruamel-yaml>=0.19.1",
 ]
@@ -33,7 +33,7 @@ Issues = "https://github.com/arian24b/pulsecheck/issues"
 Changelog = "https://github.com/arian24b/pulsecheck/releases"
 
 [tool.uv.sources]
-cfui = { path = "../cfui", editable = true }  # drop once cfui is on PyPI
+cfuicli = { path = "../cfui", editable = true }  # drop once cfui is on PyPI
 
 [project.scripts]
 pulsecheck = "pulsecheck.cli:main"

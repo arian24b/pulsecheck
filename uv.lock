@@ -34,8 +34,8 @@ wheels = [
 ]
 
 [[package]]
-name = "cfui"
-version = "0.1.0"
+name = "cfuicli"
+version = "0.2.0"
 source = { editable = "../cfui" }
 
 [package.metadata]
@@ -43,6 +43,7 @@ source = { editable = "../cfui" }
 [package.metadata.requires-dev]
 dev = [
     { name = "pytest", specifier = ">=8" },
+    { name = "python-semantic-release", specifier = ">=9" },
     { name = "ruff", specifier = ">=0.8" },
 ]
 
@@ -476,7 +477,7 @@ name = "pulsecheckcli"
 version = "0.2.0"
 source = { editable = "." }
 dependencies = [
-    { name = "cfui" },
+    { name = "cfuicli" },
     { name = "httpx" },
     { name = "ruamel-yaml" },
 ]
@@ -490,7 +491,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cfui", editable = "../cfui" },
+    { name = "cfuicli", editable = "../cfui" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "ruamel-yaml", specifier = ">=0.19.1" },
 ]
