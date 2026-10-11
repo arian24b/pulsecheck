@@ -25,6 +25,13 @@ jobs:
           TG_CHAT: ${{ secrets.TG_CHAT }}
           API_TOKEN: ${{ secrets.API_TOKEN }}
         run: uv run pulsecheck -c pulsecheck.yml run
+      - name: Status summary
+        if: always()
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: uv run pulsecheck -c pulsecheck.yml status --md >> "$GITHUB_STEP_SUMMARY"
       - name: Save state
         if: always()
         uses: actions/cache/save@v4

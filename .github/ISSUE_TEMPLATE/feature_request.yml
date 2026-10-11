@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like pulsecheck to do?
+  - type: dropdown
+    id: where
+    attributes:
+      label: Must it work on serverless (Vercel / Cloudflare)?
+      options: ["No, CLI / CI / cron is enough", "Yes, Vercel", "Yes, Cloudflare", "Yes, both"]

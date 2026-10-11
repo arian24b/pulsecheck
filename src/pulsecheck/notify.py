@@ -25,4 +25,3 @@ def send(cmd: list[str], urls: list[str], message: str) -> None:
                 print(f"notify failed: {p.stderr.strip() or p.stdout.strip()}", file=sys.stderr)
         except (OSError, subprocess.TimeoutExpired) as e:
             print(f"notify failed: {e}", file=sys.stderr)  # never crash a run over an alert
-

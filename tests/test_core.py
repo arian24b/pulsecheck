@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from pulsecheck.checks import Result
 from pulsecheck.config import Maintenance
@@ -31,7 +31,7 @@ def test_degraded():
 
 
 def test_maintenance_daily_and_weekly():
-    sun = datetime(2026, 10, 11, 2, 30, tzinfo=timezone.utc)  # a Sunday
+    sun = datetime(2026, 10, 11, 2, 30, tzinfo=UTC)  # a Sunday
     assert Maintenance(start="SUN 02:00", duration=60).active(sun, "a")
     assert not Maintenance(start="MON 02:00", duration=60).active(sun, "a")
     assert Maintenance(start="02:00", duration=60).active(sun, "a")
@@ -44,8 +44,12 @@ def test_messages_override_and_validation():
 
     from pulsecheck import config
 
-    cfg = config.Config(sites=[{"name": "a", "url": "http://x", "messages": {"down": "site {site} bad"}}],
-                        messages={"up": "{site} back after {minutes}m"})
+    cfg = config.from_dict(
+        {
+            "sites": [{"name": "a", "url": "http://x", "messages": {"down": "site {site} bad"}}],
+            "messages": {"up": "{site} back after {minutes}m"},
+        }
+    )
     s = cfg.sites[0]
     assert config.render(cfg, s, "down", site="a") == "site a bad"  # site beats global
     assert config.render(cfg, s, "up", site="a", minutes=3) == "a back after 3m"  # global beats built-in
@@ -53,6 +57,25 @@ def test_messages_override_and_validation():
     with pytest.raises(ValueError):
         config._check_messages({"nope": "x"})
     with pytest.raises(ValueError):  # a bad key under a site is rejected at load time too
-        config.Site(name="a", url="http://x", messages={"nope": "x"})
+        config.build(config.Site, {"name": "a", "url": "http://x", "messages": {"nope": "x"}})
     with pytest.raises(ValueError):
         config._check_messages({"down": "{bogus}"})
+
+
+def test_ssl_expired_detection(monkeypatch):
+    import ssl
+
+    from pulsecheck import checks, config
+
+    err = ssl.SSLCertVerificationError(1, "certificate has expired")
+    err.verify_code = 10
+
+    def boom(*a, **k):
+        raise err
+
+    monkeypatch.setattr(checks.socket, "create_connection", boom)
+    s = config.Site(name="a", url="https://x.example.com", ssl_warn_days=14)
+    assert checks.ssl_days_left(s) == 0
+    monkeypatch.setattr(checks, "_http", lambda s: checks.Result(False, 1, error="verify failed"))
+    r = checks.run_check(s)
+    assert not r.ok and r.error == "TLS certificate has expired"

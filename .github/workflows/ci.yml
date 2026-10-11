@@ -1,0 +1,45 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14", "3.15"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --frozen
+      - run: uv run pytest -q
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - name: GitHub workflows
+        run: uvx --from actionlint-py actionlint
+      - name: Shell scripts
+        run: uvx --from shellcheck-py shellcheck install.sh deploy/cloudflare/*.sh
+      - name: GitLab CI file
+        run: uvx check-jsonschema --builtin-schema vendor.gitlab-ci .gitlab-ci.yml
+      - name: Example config is valid
+        env:
+          TG_TOKEN: "1:a"
+          TG_CHAT: "@c"
+          API_TOKEN: "t"
+        run: uv run pulsecheck -c pulsecheck.example.yml validate

@@ -2,12 +2,12 @@ import json
 import statistics
 import time
 
-from .checks import Result
+from .result import Result
 
 SCHEMA = """
 create table if not exists checks(site text, ts real, ok int, status int, ms int, error text);
 create index if not exists checks_site_ts on checks(site, ts);
-create table if not exists state(site text primary key, status text, fails int, since real, last real);
+create table if not exists state(site text primary key, status text, fails int, since real, last real, meta text default '{}');
 """
 
 
@@ -28,6 +28,8 @@ class Store:
 
         self.db = sqlite3.connect(path)
         self.db.executescript(SCHEMA)
+        if "meta" not in [r[1] for r in self.db.execute("pragma table_info(state)")]:  # database from an older version
+            self.db.execute("alter table state add column meta text default '{}'")
 
     async def open(self):
         pass
@@ -36,12 +38,12 @@ class Store:
         self.prune()
 
     def get(self, site: str):
-        row = self.db.execute("select status, fails, since, last from state where site=?", (site,)).fetchone()
-        return row or ("up", 0, time.time(), 0)
+        row = self.db.execute("select status, fails, since, last, meta from state where site=?", (site,)).fetchone()
+        return (*row[:4], json.loads(row[4] or "{}")) if row else ("up", 0, time.time(), 0, {})
 
-    def save(self, site: str, r: Result, status: str, fails: int, since: float, now: float):
+    def save(self, site: str, r: Result, status: str, fails: int, since: float, now: float, meta: dict):
         self.db.execute("insert into checks values (?,?,?,?,?,?)", (site, now, int(r.ok), r.status, r.ms, r.error))
-        self.db.execute("insert or replace into state values (?,?,?,?,?)", (site, status, fails, since, now))
+        self.db.execute("insert or replace into state values (?,?,?,?,?,?)", (site, status, fails, since, now, json.dumps(meta)))
         self.db.commit()
 
     def prune(self, days: int = 400):
@@ -49,9 +51,7 @@ class Store:
         self.db.commit()
 
     def report(self, site: str, days: int):
-        rows = self.db.execute(
-            "select ok, ms from checks where site=? and ts > ?", (site, time.time() - days * 86400)
-        ).fetchall()
+        rows = self.db.execute("select ok, ms from checks where site=? and ts > ?", (site, time.time() - days * 86400)).fetchall()
         if not rows:
             return None
         ms = sorted(m for ok, m in rows if ok)
@@ -85,10 +85,10 @@ class BlobStore:
 
     def get(self, site: str):
         s = self.doc["sites"].get(site)
-        return tuple(s) if s else ("up", 0, time.time(), 0)
+        return (*s[:4], s[4] if len(s) > 4 else {}) if s else ("up", 0, time.time(), 0, {})
 
-    def save(self, site: str, r: Result, status: str, fails: int, since: float, now: float):
-        self.doc["sites"][site] = [status, fails, since, now]
+    def save(self, site: str, r: Result, status: str, fails: int, since: float, now: float, meta: dict):
+        self.doc["sites"][site] = [status, fails, since, now, meta]
         day = self.doc["daily"].setdefault(site, {}).setdefault(time.strftime("%Y%m%d", time.gmtime(now)), [0, 0, 0, 0])
         day[0] += 1
         if r.ok:

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/arian24b/pulsecheck/discussions
+    about: Ask in Discussions first
+  - name: Documentation
+    url: https://github.com/arian24b/pulsecheck/wiki
+    about: Guide in English and Persian

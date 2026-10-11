@@ -4,17 +4,18 @@
 
 [English](README.md) · **فارسی**
 
-مانیتور آپتایم خودمیزبان. آدرس‌های HTTP(S)، پورت‌های TCP و میزبان‌ها (ping) را در بازه‌های مشخص بررسی می‌کند، وضعیت up / down / کند را نگه می‌دارد و هشدارها را با [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) می‌فرستد (اسلک، تلگرام، دیسکورد، ایمیل، ntfy و بیشتر). یک فایل YAML، یک فایل وضعیت SQLite، بدون داشبورد و بدون تاریخچه گیت.
+مانیتور آپتایم خودمیزبان. آدرس‌های HTTP(S)، پورت‌های TCP و میزبان‌ها (ping) را در بازه‌های مشخص بررسی می‌کند، وضعیت up / down / کند را نگه می‌دارد و هشدارها را با [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) می‌فرستد (اسلک، تلگرام، دیسکورد، ایمیل، ntfy و بیش از ۲۰ سرویس دیگر). یک فایل YAML، یک فایل وضعیت، بدون داشبورد و بدون تاریخچه گیت.
 
 ## امکانات
-- بررسی HTTP با متد، هدر، بدنه، کدهای وضعیت مورد انتظار، حد ریدایرکت، حداکثر زمان پاسخ و آستانه «کند» (degraded)
+- بررسی HTTP: متد، هدر، بدنه، کد وضعیت مورد انتظار، حد ریدایرکت، حداکثر زمان پاسخ و آستانه «کند» (degraded)
+- هشدار انقضای گواهی TLS (`ssl_warn_days`) و شکست در صورت منقضی‌بودن گواهی
 - بررسی TCP و ping
+- هشدار فقط هنگام تغییر وضعیت، `down_after` برای نادیده‌گرفتن قطعی‌های کوتاه و یادآوری تکراری اختیاری (`remind_every`)
+- برچسب (tag)، بازه بررسی و مسیر هشدار جدا برای هر سایت؛ بازه نگهداری (maintenance) به وقت UTC
+- متن هشدارها بر اساس کلید قابل ویرایش است (`messages:`)
+- دستور `status` (متن، JSON، مارک‌دان) و `report` (درصد آپتایم، زمان پاسخ) بدون داشبورد
 - جایگزینی `${ENV}` تا رمزها بیرون از فایل تنظیم بمانند
-- هشدار فقط هنگام تغییر وضعیت، و `down_after` برای نادیده‌گرفتن قطعی‌های کوتاه
-- متن هشدارها بر اساس کلید در YAML قابل ویرایش است (`messages:`، سراسری یا برای هر سایت)
-- بازه بررسی جدا برای هر سایت، مسیر هشدار جدا برای هر سایت، بازه نگهداری (maintenance) به وقت UTC
-- گزارش درصد آپتایم و زمان پاسخ (`report` و `--json`)
-- اجرا با GitHub Actions، GitLab CI یا cron، یا سرورلس روی Vercel و Cloudflare Workers (با [محدودیت‌ها](docs/fa/Serverless.md))
+- اجرا با GitHub Actions، GitLab CI، cron یا سرورلس روی Vercel و Cloudflare Workers (با [محدودیت‌ها](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless))
 - پایتون ۳٫۱۲ تا ۳٫۱۵ (ترجیحاً ۳٫۱۵) با [uv](https://docs.astral.sh/uv/)
 
 ## نصب روی لینوکس (یک دستور)
@@ -29,29 +30,30 @@ uv sync
 cp pulsecheck.example.yml pulsecheck.yml     # ویرایشش کنید
 uv run pulsecheck validate
 uv run pulsecheck test-notify
-uv run pulsecheck run [--force] [--fail-on-down]
+uv run pulsecheck run [--force] [--fail-on-down] [--tag prod]
+uv run pulsecheck status [--json|--md]
 uv run pulsecheck report [--json]
 ```
-shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌شود، وگرنه از فایل اجرایی `shoutrrr` در `PATH` (با `shoutrrr_bin` در تنظیمات قابل تغییر است). برای `type: ping` دستور `ping` لازم است.
+shoutrrr وقتی Docker کار کند از image داکرش اجرا می‌شود، وگرنه از فایل اجرایی `shoutrrr` در `PATH`. برای `type: ping` دستور `ping` لازم است.
 
-در گیت‌هاب با **Use this template** کپی خودتان را بسازید؛ workflow مربوط به GitHub Actions آماده است. برای GitLab فایل `.gitlab-ci.yml` و برای cron فایل `deploy/cron.example` را استفاده کنید.
+با **Use this template** کپی خودتان را بسازید؛ workflow مربوط به GitHub Actions آماده است. **کپی خودتان را خصوصی نگه دارید**: `pulsecheck.yml` شما نام میزبان‌هایتان را فهرست می‌کند.
 
-## مستندات
+## مستندات (ویکی)
 | | English | فارسی |
 |---|---|---|
-| معرفی | [Home](docs/en/Home.md) | [خانه](docs/fa/Home.md) |
-| نصب و اولین اجرا | [Getting started](docs/en/Getting-Started.md) | [شروع سریع](docs/fa/Getting-Started.md) |
-| همه تنظیمات | [Configuration](docs/en/Configuration.md) | [تنظیمات](docs/fa/Configuration.md) |
-| سرویس‌های هشدار | [Notifications](docs/en/Notifications.md) | [اعلان‌ها](docs/fa/Notifications.md) |
-| GitHub / GitLab / cron | [Scheduling](docs/en/Scheduling.md) | [زمان‌بندی](docs/fa/Scheduling.md) |
-| Vercel / Cloudflare | [Serverless](docs/en/Serverless.md) | [سرورلس](docs/fa/Serverless.md) |
-| مشکلات | [Troubleshooting](docs/en/Troubleshooting.md) | [عیب‌یابی](docs/fa/Troubleshooting.md) |
+| معرفی | [Home](https://github.com/arian24b/pulsecheck/wiki/Home) | [خانه](https://github.com/arian24b/pulsecheck/wiki/FA-Home) |
+| نصب و اولین اجرا | [Getting started](https://github.com/arian24b/pulsecheck/wiki/Getting-Started) | [شروع سریع](https://github.com/arian24b/pulsecheck/wiki/FA-Getting-Started) |
+| همه تنظیمات | [Configuration](https://github.com/arian24b/pulsecheck/wiki/Configuration) | [تنظیمات](https://github.com/arian24b/pulsecheck/wiki/FA-Configuration) |
+| سرویس‌های هشدار | [Notifications](https://github.com/arian24b/pulsecheck/wiki/Notifications) | [اعلان‌ها](https://github.com/arian24b/pulsecheck/wiki/FA-Notifications) |
+| GitHub / GitLab / cron | [Scheduling](https://github.com/arian24b/pulsecheck/wiki/Scheduling) | [زمان‌بندی](https://github.com/arian24b/pulsecheck/wiki/FA-Scheduling) |
+| Vercel / Cloudflare | [Serverless](https://github.com/arian24b/pulsecheck/wiki/Serverless) | [سرورلس](https://github.com/arian24b/pulsecheck/wiki/FA-Serverless) |
+| مشکلات | [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting) | [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting) |
 
-همین مستندات در [ویکی گیت‌هاب](https://github.com/arian24b/pulsecheck/wiki) هم هست (انگلیسی و فارسی؛ `deploy/sync-wiki.sh` آن را از `docs/` به‌روز می‌کند).
+پرسش و پاسخ: [Discussions](https://github.com/arian24b/pulsecheck/discussions). مشارکت: [CONTRIBUTING](.github/CONTRIBUTING.md). امنیت: [SECURITY](.github/SECURITY.md).
 
 ## توسعه
 ```bash
-uv run pytest
+uv run pytest -q && uv run ruff check . && uv run ruff format --check .
 ```
 
 ## مجوز

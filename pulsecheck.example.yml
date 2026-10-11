@@ -10,8 +10,8 @@ notify:                          # global; a site may override with its own noti
     - telegram://${TG_TOKEN}@telegram?chats=${TG_CHAT}
   events: [down, up, degraded]
 
-messages:                        # optional: edit any alert text. Keys: down, degraded, up, test
-  down: "🔴 {site} is DOWN: {error}"          # placeholders: {site} {event} {error} {ms} {minutes} {status}
+messages:                        # optional: edit any alert text. Keys: down, reminder, degraded, up, ssl_warn, test
+  down: "🔴 {site} is DOWN: {error}"          # placeholders: {site} {event} {error} {ms} {minutes} {status} {tags} {days}
   # up: "🟢 {site} recovered after {minutes} min"   # a site can also have its own messages:
 
 defaults:                        # merged into every site
@@ -19,6 +19,7 @@ defaults:                        # merged into every site
   down_after: 2                  # consecutive failures before alerting
   interval: 5                    # minutes between checks of a site
   slow_ms: 3000                  # >= this = degraded
+  # remind_every: 60            # minutes between repeated "still down" alerts (0 = off)
 
 maintenance:                     # UTC; alerts suppressed while active
   - {name: weekly, start: "SUN 02:00", duration: 60}   # minutes; add sites: [web] to scope
@@ -26,6 +27,8 @@ maintenance:                     # UTC; alerts suppressed while active
 sites:
   - name: web
     url: https://example.com
+    tags: [prod]                 # use with --tag prod
+    ssl_warn_days: 14            # warn when the https certificate expires within 14 days
     expected_status: [200, 301]  # default: any 2xx
     max_response_ms: 10000       # slower = down
   - name: api

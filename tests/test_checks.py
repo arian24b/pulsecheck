@@ -51,4 +51,4 @@ def test_max_response_ms(server):
 @pytest.mark.skipif(not shutil.which("ping"), reason="no ping binary")
 def test_ping():
     assert run_check(Site(name="p", type="ping", host="127.0.0.1")).ok
-    assert not run_check(Site(name="p", type="ping", host="192.0.2.1", timeout=1)).ok
+    assert not run_check(Site(name="p", type="ping", host="no-such-host.invalid", timeout=1)).ok
