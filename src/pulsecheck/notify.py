@@ -1,7 +1,12 @@
 import functools
+import hashlib
+import os
+import platform
 import shutil
 import subprocess
 import sys
+import tarfile
+import urllib.request
 
 
 @functools.cache
@@ -25,3 +30,29 @@ def send(cmd: list[str], urls: list[str], message: str) -> None:
                 print(f"notify failed: {p.stderr.strip() or p.stdout.strip()}", file=sys.stderr)
         except (OSError, subprocess.TimeoutExpired) as e:
             print(f"notify failed: {e}", file=sys.stderr)  # never crash a run over an alert
+
+
+SHOUTRRR_VERSION = "0.21.2"
+
+
+def download_shoutrrr(dest: str = "/tmp/pulsecheck-bin", version: str = SHOUTRRR_VERSION) -> str:
+    """Fetch the shoutrrr binary from its GitHub release (sha256 checked against the release's checksums.txt).
+    For places that have neither Docker nor an installed binary, such as Vercel functions. Cached in `dest`."""
+    path = os.path.join(dest, "shoutrrr")
+    if os.access(path, os.X_OK):
+        return path
+    arch = {"x86_64": "amd64", "aarch64": "arm64v8", "arm64": "arm64v8"}.get(platform.machine())
+    if arch is None:
+        raise RuntimeError(f"no shoutrrr build for {platform.machine()}")
+    base = f"https://github.com/nicholas-fedor/shoutrrr/releases/download/v{version}/"
+    name = f"shoutrrr_linux_{arch}_{version}.tar.gz"
+    data = urllib.request.urlopen(base + name, timeout=60).read()
+    sums = urllib.request.urlopen(base + "checksums.txt", timeout=30).read().decode()
+    expected = next((line.split()[0] for line in sums.splitlines() if line.endswith(name)), None)
+    if expected is None or hashlib.sha256(data).hexdigest() != expected:
+        raise RuntimeError("shoutrrr download failed its checksum")
+    os.makedirs(dest, exist_ok=True)
+    with tarfile.open(fileobj=__import__("io").BytesIO(data)) as tf, open(path, "wb") as out:
+        out.write(tf.extractfile("shoutrrr").read())
+    os.chmod(path, 0o755)
+    return path

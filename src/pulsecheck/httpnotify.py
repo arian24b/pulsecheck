@@ -6,6 +6,11 @@ import json
 import sys
 from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
 
+
+class Unsupported(ValueError):
+    """The url scheme has no built-in HTTP implementation."""
+
+
 SUPPORTED = "telegram, discord, slack, ntfy, gotify, pushover, mattermost, rocketchat, googlechat, zulip, bark, generic"
 
 
@@ -130,14 +135,22 @@ def requests_for(url: str, text: str) -> list[dict]:
                 "body": json.dumps({"device_key": key, "body": text}),
             }
         ]
-    raise ValueError(f"'{u.scheme}://' is not supported here (supported: {SUPPORTED}); use the CLI/CI/cron mode for all shoutrrr services")
+    raise Unsupported(f"'{u.scheme}://' is not supported here (supported: {SUPPORTED}); use the CLI/CI/cron mode for all shoutrrr services")
 
 
-async def send(post, urls: list[str], text: str) -> None:
-    """post: async (url, headers, body) -> http status. Never raises: a failed alert must not fail the run."""
+async def send(post, urls: list[str], text: str, fallback=None) -> None:
+    """post: async (url, headers, body) -> http status; fallback: async (url, text) for schemes handled elsewhere
+    (the real shoutrrr). Never raises: a failed alert must not fail the run."""
     for u in urls:
         try:
-            for req in requests_for(u, text):
+            try:
+                reqs = requests_for(u, text)
+            except Unsupported:
+                if fallback is None:
+                    raise
+                await fallback(u, text)
+                continue
+            for req in reqs:
                 status = await post(req["url"], req["headers"], req["body"])
                 if status >= 400:
                     print(f"notify failed: HTTP {status} from {urlparse(req['url']).hostname}", file=sys.stderr)

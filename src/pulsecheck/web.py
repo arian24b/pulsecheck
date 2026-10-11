@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 
 import httpx
 
-from . import config, engine, httpnotify
+from . import config, engine, httpnotify, notify
 from .checks import run_check
 from .state import BlobStore
 
@@ -41,8 +41,12 @@ async def _open(env, path: str):
         async def post(u, headers, body):
             return (await c.post(u, headers=headers, content=body)).status_code
 
+        async def shoutrrr(u, text):  # every other shoutrrr service: download the real binary once per instance
+            path = await asyncio.to_thread(notify.download_shoutrrr)
+            await asyncio.to_thread(notify.send, [path], [u], text)
+
         async def send(urls, text):
-            await httpnotify.send(post, urls, text)
+            await httpnotify.send(post, urls, text, fallback=shoutrrr)
 
         yield cfg, BlobStore(lambda: redis("GET", KEY), lambda text: redis("SET", KEY, text)), check, send
 

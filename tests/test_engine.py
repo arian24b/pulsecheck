@@ -169,3 +169,51 @@ def test_ssl_days_left_ignores_non_https():
     from pulsecheck.checks import ssl_days_left
 
     assert ssl_days_left(config.Site(name="a", url="http://x")) is None
+
+
+def test_unsupported_scheme_uses_fallback(capsys):
+    got = []
+
+    async def post(url, headers, body):
+        return 200
+
+    async def fallback(u, text):
+        got.append((u, text))
+
+    asyncio.run(httpnotify.send(post, ["smtp://u:p@h/?to=a", "discord://t@1"], "m", fallback=fallback))
+    assert got == [("smtp://u:p@h/?to=a", "m")] and capsys.readouterr().err == ""
+    asyncio.run(httpnotify.send(post, ["smtp://u:p@h/?to=a"], "m"))
+    assert "not supported here" in capsys.readouterr().err
+
+
+def test_download_shoutrrr_verifies_checksum(tmp_path, monkeypatch):
+    import hashlib
+    import io
+    import tarfile
+
+    from pulsecheck import notify
+
+    buf = io.BytesIO()
+    with tarfile.open(fileobj=buf, mode="w:gz") as tf:
+        info = tarfile.TarInfo("shoutrrr")
+        payload = b"#!/bin/sh\necho ok\n"
+        info.size = len(payload)
+        tf.addfile(info, io.BytesIO(payload))
+    blob = buf.getvalue()
+    monkeypatch.setattr(notify.platform, "machine", lambda: "x86_64")
+    name = "shoutrrr_linux_amd64_9.9.9.tar.gz"
+
+    def fake(sha):
+        def urlopen(url, timeout=0):
+            return io.BytesIO(blob if url.endswith(".tar.gz") else f"{sha}  {name}\n".encode())
+
+        return urlopen
+
+    import pytest
+
+    monkeypatch.setattr(notify.urllib.request, "urlopen", fake("0" * 64))
+    with pytest.raises(RuntimeError, match="checksum"):
+        notify.download_shoutrrr(str(tmp_path / "bad"), "9.9.9")
+    monkeypatch.setattr(notify.urllib.request, "urlopen", fake(hashlib.sha256(blob).hexdigest()))
+    path = notify.download_shoutrrr(str(tmp_path / "good"), "9.9.9")
+    assert open(path, "rb").read() == payload and os.access(path, os.X_OK)
