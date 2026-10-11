@@ -32,11 +32,11 @@ jobs:
       url: https://pypi.org/project/pulsecheckcli/
     concurrency: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # semantic-release needs the full history and tags
           ref: ${{ github.event.workflow_run.head_branch || github.ref_name }}
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - name: Git identity for the release commit
         run: |
           git config user.name "github-actions[bot]"
