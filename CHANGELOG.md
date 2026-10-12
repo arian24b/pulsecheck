@@ -2,6 +2,52 @@
 
 <!-- version list -->
 
+## v0.2.1 (2026-10-12)
+
+### Bug Fixes
+
+- **cli**: Show - instead of Nonems in report; docs: add how it works and troubleshooting sections
+  ([#6](https://github.com/arian24b/pulsecheck/pull/6),
+  [`2bc1774`](https://github.com/arian24b/pulsecheck/commit/2bc17749974ec1dec8b504935aceb3fb21af67ad))
+
+### Build System
+
+- Depend on cfuicli (PyPI name of cfui) ([#5](https://github.com/arian24b/pulsecheck/pull/5),
+  [`6febb51`](https://github.com/arian24b/pulsecheck/commit/6febb5194ba7753623168c33dff045d83436c842))
+
+- Use cfuicli from PyPI ([#5](https://github.com/arian24b/pulsecheck/pull/5),
+  [`6febb51`](https://github.com/arian24b/pulsecheck/commit/6febb5194ba7753623168c33dff045d83436c842))
+
+### Code Style
+
+- Format cf-cli-ui skill example for ruff format
+  ([#5](https://github.com/arian24b/pulsecheck/pull/5),
+  [`6febb51`](https://github.com/arian24b/pulsecheck/commit/6febb5194ba7753623168c33dff045d83436c842))
+
+### Continuous Integration
+
+- Add repository_dispatch trigger for external cron
+  ([`d359549`](https://github.com/arian24b/pulsecheck/commit/d359549f1c2d2289abd1beba11373ab9524aaa0a))
+
+### Documentation
+
+- Drop Upptime mentions
+  ([`9509260`](https://github.com/arian24b/pulsecheck/commit/95092609d013dd35acf2a433685ab4ef89cd3fe9))
+
+- Refresh EN/FA README, add cf-cli-ui skill ([#5](https://github.com/arian24b/pulsecheck/pull/5),
+  [`6febb51`](https://github.com/arian24b/pulsecheck/commit/6febb5194ba7753623168c33dff045d83436c842))
+
+### Refactoring
+
+- Move CLI onto cfui (cf-style UI, common commands)
+  ([#5](https://github.com/arian24b/pulsecheck/pull/5),
+  [`6febb51`](https://github.com/arian24b/pulsecheck/commit/6febb5194ba7753623168c33dff045d83436c842))
+
+- Move CLI onto cfui; init no longer asks wizard questions; shared update/version/help
+  ([#5](https://github.com/arian24b/pulsecheck/pull/5),
+  [`6febb51`](https://github.com/arian24b/pulsecheck/commit/6febb5194ba7753623168c33dff045d83436c842))
+
+
 ## v0.2.0 (2026-10-11)
 
 ### Chores
