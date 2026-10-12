@@ -33,6 +33,22 @@ curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh
 ```
 It installs the PyPI package `pulsecheckcli` with `uv tool` and runs `pulsecheck init`. Then run `pulsecheck env`, `pulsecheck validate` and `pulsecheck test-notify`.
 
+## How it works
+
+Each `pulsecheck run` loads the YAML, picks the sites whose `interval` has elapsed (`--force` checks all) and checks them concurrently (HTTP, TCP or ping). The result goes into a SQLite file (`state_file`, default `pulsecheck.db`). A site becomes `down` after `down_after` consecutive failures, and `degraded` when it answers slower than `slow_ms`. An alert is sent only when the state changes (plus optional reminders), by running `shoutrrr send` through its docker image or a local binary. Nothing stays running: schedule `run` with cron, GitHub Actions or GitLab CI.
+
+Example run against a local web server and a closed port (`down_after: 1`):
+
+```console
+$ pulsecheck -c pulsecheck.yml run --fail-on-down; echo $?
+local: up 30ms
+closed: down 0ms ConnectionRefusedError: [Errno 111] Connection refused
+1
+$ pulsecheck -c pulsecheck.yml status
+🟢 local                up        for 0s    last 0s     24h 100.0%
+🔴 closed               down      for 0s    last 0s     24h 0.0%
+```
+
 ## Quick start (from a clone)
 ```bash
 uv sync
@@ -62,6 +78,13 @@ Want it running on GitHub Actions with the fewest files? Click **Use this templa
 | Problems | [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting) | [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting) |
 
 Questions: [Discussions](https://github.com/arian24b/pulsecheck/discussions). Contributing: [CONTRIBUTING](https://github.com/arian24b/pulsecheck/blob/main/.github/CONTRIBUTING.md). Security: [SECURITY](https://github.com/arian24b/pulsecheck/blob/main/.github/SECURITY.md).
+
+## Troubleshooting and security
+
+- No alerts arrive: run `pulsecheck test-notify`. It sends to every channel and shows the shoutrrr error, if any. Also check `notify.events` and that the site has been failing for `down_after` runs.
+- `type: ping` fails: the `ping` command must be installed.
+- `pulsecheck.yml` lists your hostnames, and `.env` holds tokens. Keep both out of public repositories and reference secrets as `${VAR}`.
+- More: [Troubleshooting](https://github.com/arian24b/pulsecheck/wiki/Troubleshooting).
 
 ## Development
 ```bash
