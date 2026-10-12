@@ -1,6 +1,6 @@
 # pulsecheck
 
-**English** · [فارسی](https://github.com/arian24b/pulsecheck/blob/main/README.fa.md)
+**English** · [فارسی](README.fa.md)
 
 Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (ping) on a schedule, tracks up / down / slow state, and sends alerts through [shoutrrr](https://github.com/nicholas-fedor/shoutrrr) (Slack, Telegram, Discord, email, ntfy and 20+ more). One YAML file, one state file, no dashboard, no git history.
 
@@ -13,7 +13,7 @@ Self-hosted uptime monitor. It checks HTTP(S) endpoints, TCP ports and hosts (pi
 - Editable alert texts by key (`messages:`)
 - `status` (text, JSON, markdown) and `report` (uptime %, response times) without a dashboard
 - OpenTelemetry push (OTLP/HTTP JSON metrics and logs) to any collector or webhook
-- Guided setup: `init` (config, `.env`, shoutrrr, cron), `env`, `validate`, `test-notify` to every channel, `update`
+- Setup commands: `init` (config, `.env`, shoutrrr, cron; no questions, flags decide), `env`, `validate`, `test-notify` to every channel, `update`
 - `${ENV}` substitution, so secrets stay out of the config
 - Runs from GitHub Actions, GitLab CI, cron, or serverless on Vercel and Cloudflare Workers (see the [limits](https://github.com/arian24b/pulsecheck/wiki/Serverless))
 - Python 3.12–3.15 (3.15 preferred), managed with [uv](https://docs.astral.sh/uv/)
@@ -71,3 +71,19 @@ Commit messages follow [Conventional Commits](https://www.conventionalcommits.or
 
 ## License
 MIT
+
+## Common commands
+
+Built on [cfuicli](https://github.com/arian24b/cfui), so it looks and behaves like the other tools in this family.
+
+```bash
+pulsecheck help [command]     # help; -h works on any command
+pulsecheck version            # version and git repository (also: -v)
+pulsecheck update [--check]   # update the tool itself; --check only compares versions
+pulsecheck -q ...             # quiet: no banner or notes (or PULSECHECK_QUIET=1)
+```
+
+- A missing required option is asked for when you run the tool in a terminal. In a pipe or in CI it stops with `--flag is required. Pass --flag <value> or run interactively.` (exit code 2).
+- Errors appear in a red box on stderr with a non-zero exit code. Ctrl-C exits with 130.
+- Color is used only on a terminal. `NO_COLOR=1` turns it off.
+- `pulsecheck init` takes `--no-cron`, `--no-download`, `--force` and `--cron EXPR`; `--remove-cron` removes the cron job it added. The global `-c/--config FILE` can go before or after the command.

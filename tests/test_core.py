@@ -121,11 +121,11 @@ def test_init_creates_files_and_cron(tmp_path, monkeypatch):
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
     installed = []
     monkeypatch.setattr(setup, "edit_crontab", lambda line: installed.append(line))
-    cfg = setup.init(yes=True, download=False, say=lambda *_: None)
+    cfg = setup.init(download=False, say=lambda *_: None)
     assert cfg == tmp_path / "cfg/pulsecheck/pulsecheck.yml" and f"state_file: {tmp_path}/state/pulsecheck/pulsecheck.db" in cfg.read_text()
     env = tmp_path / "cfg/pulsecheck/.env"
     assert "TG_TOKEN=" in env.read_text() and oct(env.stat().st_mode)[-3:] == "600"
     assert len(installed) == 1 and "-m pulsecheck" in installed[0] and installed[0].startswith("*/5 * * * *")
     cfg.write_text("keep me")
-    setup.init(yes=True, download=False, cron=False, say=lambda *_: None)
+    setup.init(download=False, cron=False, say=lambda *_: None)
     assert cfg.read_text() == "keep me"  # an existing config is never overwritten without --force

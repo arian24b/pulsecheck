@@ -36,5 +36,5 @@ if (: </dev/tty) 2>/dev/null; then
   pulsecheck init "$@" </dev/tty
 else
   say "no terminal: running init without questions (use --no-cron to skip the cron job)"
-  pulsecheck init --yes "$@"
+  pulsecheck init "$@"
 fi
