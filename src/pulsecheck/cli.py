@@ -11,6 +11,10 @@ from .checks import run_check
 from .state import Store
 
 
+def _ms(v):
+    return "-" if v is None else f"{v}ms"
+
+
 def http_post(url, headers, body):  # sync; callers run it in a thread
     req = urllib.request.Request(url, data=body.encode(), headers=headers, method="POST")
     try:
@@ -48,7 +52,7 @@ def report(cfg: config.Config, as_json: bool, tag: str | None = None) -> None:
         ui.data(out)
         return
     rows = [
-        (name, w, f"{v['uptime_pct']}%", f"{v['avg_ms']}ms", f"{v['p95_ms']}ms", v["checks"]) if v else (name, w, "no data", "", "", "")
+        (name, w, f"{v['uptime_pct']}%", _ms(v["avg_ms"]), _ms(v["p95_ms"]), v["checks"]) if v else (name, w, "no data", "", "", "")
         for name, ws in out.items()
         for w, v in ws.items()
     ]

@@ -36,6 +36,22 @@ curl -fsSL https://raw.githubusercontent.com/arian24b/pulsecheck/main/install.sh
 ```
 این خط بسته‌ی `pulsecheckcli` را با `uv tool` نصب می‌کند و `pulsecheck init` را اجرا می‌کند. بعد `pulsecheck env`، `pulsecheck validate` و `pulsecheck test-notify` را بزنید.
 
+## نحوهٔ کار
+
+هر بار `pulsecheck run` فایل YAML را می‌خواند، سایت‌هایی را که `interval`شان سپری شده برمی‌دارد (با `--force` همه) و هم‌زمان بررسی می‌کند (HTTP، TCP یا ping). نتیجه در یک فایل SQLite ذخیره می‌شود (`state_file`، پیش‌فرض `pulsecheck.db`). سایت بعد از `down_after` شکست پشت‌سرهم `down` می‌شود و اگر کندتر از `slow_ms` جواب بدهد `degraded`. هشدار فقط وقتی فرستاده می‌شود که وضعیت عوض شود (و در صورت تنظیم، یادآوری)؛ ارسال با `shoutrrr send` است، از image داکر یا فایل اجرایی محلی. هیچ فرایندی در پس‌زمینه نمی‌ماند: `run` را با cron، GitHub Actions یا GitLab CI زمان‌بندی کنید.
+
+نمونهٔ اجرا روی یک وب‌سرور محلی و یک پورت بسته (با `down_after: 1`):
+
+```console
+$ pulsecheck -c pulsecheck.yml run --fail-on-down; echo $?
+local: up 30ms
+closed: down 0ms ConnectionRefusedError: [Errno 111] Connection refused
+1
+$ pulsecheck -c pulsecheck.yml status
+🟢 local                up        for 0s    last 0s     24h 100.0%
+🔴 closed               down      for 0s    last 0s     24h 0.0%
+```
+
 ## شروع سریع (از روی clone)
 ```bash
 uv sync
@@ -81,6 +97,13 @@ pulsecheck -q ...             # حالت آرام: بدون بنر و یاددا
 - خطاها در یک کادر قرمز روی stderr و با کد خروج غیرصفر نمایش داده می‌شوند. با Ctrl-C کد خروج ۱۳۰ است.
 - رنگ فقط در ترمینال استفاده می‌شود. با `NO_COLOR=1` خاموش می‌شود.
 - `pulsecheck init` این گزینه‌ها را می‌گیرد: `--no-cron`، `--no-download`، `--force` و `--cron EXPR`. با `--remove-cron` فقط cron job که خودش اضافه کرده بود حذف می‌شود. گزینهٔ سراسری `-c/--config FILE` را می‌توان قبل یا بعد از دستور نوشت.
+
+## عیب‌یابی و امنیت
+
+- هشداری نمی‌رسد: `pulsecheck test-notify` را اجرا کنید. به همهٔ کانال‌ها پیام می‌فرستد و اگر shoutrrr خطا بدهد آن را نشان می‌دهد. `notify.events` را هم ببینید و اینکه سایت دست‌کم به اندازهٔ `down_after` اجرا شکست خورده باشد.
+- بررسی `type: ping` شکست می‌خورد: دستور `ping` باید نصب باشد.
+- `pulsecheck.yml` نام سرورهای شما را دارد و `.env` توکن‌ها را. هیچ‌کدام را در مخزن عمومی نگذارید و رمزها را با `${VAR}` بدهید.
+- بیشتر: [عیب‌یابی](https://github.com/arian24b/pulsecheck/wiki/FA-Troubleshooting).
 
 ## توسعه
 ```bash
